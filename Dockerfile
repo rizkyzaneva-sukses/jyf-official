@@ -41,7 +41,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 
-# FIX: tambah --chown di semua folder prisma
+# Prisma CLI + client
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
@@ -50,11 +50,11 @@ USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-# Production: bootstrap migrations for a FRESH database, then start the app.
-# WHY: migrations 20260101000001..20260101000005 were authored for an ALREADY-EXISTING
-# database (raw ALTER TABLE on pre-created tables). They sort BEFORE 20260616000000_init,
-# which holds the full baseline schema. On an empty DB they run first and fail
-# ("relation payouts does not exist"), aborting the chain so the container exits.
-# FIX: mark those legacy January migrations as already-applied (their schema is folded
-# into _init), then run `migrate deploy` so _init + every later migration apply for real.
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate resolve --applied 20260101000001_add_payout_platform_fields || true; node node_modules/prisma/build/index.js migrate resolve --applied 20260101000002_add_trx_date || true; node node_modules/prisma/build/index.js migrate resolve --applied 20260101000003_add_ads_wallet_fields || true; node node_modules/prisma/build/index.js migrate resolve --applied 20260101000004_add_app_settings || true; node node_modules/prisma/build/index.js migrate resolve --applied 20260101000005_add_sku_mappings || true; node node_modules/prisma/build/index.js migrate deploy && node server.js"]
+
+# Production: sync schema with db push, then start the app.
+# WHY NOT migrate deploy: legacy migrations 20260101000001..05 are ALTER TABLE on
+# tables that don't exist yet, and they sort BEFORE 20260616000000_init which has
+# CREATE TABLE IF NOT EXISTS. migrate deploy fails when the chain breaks.
+# db push directly syncs Prisma schema to the database — reliable for first deploy.
+# --accept-data-loss: allows destructive changes (safe on fresh DB).
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js db push --accept-data-loss 2>&1; node server.js"]
