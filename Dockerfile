@@ -50,7 +50,11 @@ USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-
-# Production: deploy migrations first, then start the app
-# (calls prisma's CLI entry directly — node_modules/.bin/prisma isn't copied into this stage)
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]
+# Production: bootstrap migrations for a FRESH database, then start the app.
+# WHY: migrations 20260101000001..20260101000005 were authored for an ALREADY-EXISTING
+# database (raw ALTER TABLE on pre-created tables). They sort BEFORE 20260616000000_init,
+# which holds the full baseline schema. On an empty DB they run first and fail
+# ("relation payouts does not exist"), aborting the chain so the container exits.
+# FIX: mark those legacy January migrations as already-applied (their schema is folded
+# into _init), then run `migrate deploy` so _init + every later migration apply for real.
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate resolve --applied 20260101000001_add_payout_platform_fields || true; node node_modules/prisma/build/index.js migrate resolve --applied 20260101000002_add_trx_date || true; node node_modules/prisma/build/index.js migrate resolve --applied 20260101000003_add_ads_wallet_fields || true; node node_modules/prisma/build/index.js migrate resolve --applied 20260101000004_add_app_settings || true; node node_modules/prisma/build/index.js migrate resolve --applied 20260101000005_add_sku_mappings || true; node node_modules/prisma/build/index.js migrate deploy && node server.js"]
