@@ -59,4 +59,3 @@ workflow_*.json
 
 # Data mentah / file cek manual (jangan di-push, bisa berisi data sensitif)
 /CEK DATA/
-.github/workflows/
