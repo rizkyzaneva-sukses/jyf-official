@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { apiSuccess, apiError, wibDateRange } from '@/lib/utils'
 import { getReturnRatioByOrderNo } from '@/lib/pnl-helpers'
+import { ensureFinancingLedgersReclassified, financingExpenseWhere } from '@/lib/financing-query'
 
 export async function GET(request: NextRequest) {
   const session = await getSession()
@@ -22,6 +23,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (type === 'summary') {
+    await ensureFinancingLedgersReclassified()
     // Payout individual (bukan aggregate) — perlu detail per orderNo agar porsi
     // order yang RETUR bisa dikeluarkan dari Pencairan (proporsional, karena
     // satu orderNo bisa multi-SKU dan hanya sebagian yang di-retur).
@@ -83,6 +85,12 @@ export async function GET(request: NextRequest) {
           ...(fromDate && toDate && {
             trxDate: { gte: fromDate, lte: toDate }
           }),
+          NOT: {
+            OR: [
+              { category: { startsWith: 'Bayar Vendor' } },
+              ...(financingExpenseWhere().OR ?? []),
+            ],
+          },
         },
         _sum: { amount: true },
         _count: { id: true },

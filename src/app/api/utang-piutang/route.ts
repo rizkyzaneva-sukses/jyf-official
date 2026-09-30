@@ -62,12 +62,13 @@ export async function POST(request: NextRequest) {
           createdBy: session.username,
         },
       })
-      // Credit wallet (terima uang)
+      // Kas masuk. Pinjaman dan suntikan dana = pendanaan, bukan pendapatan.
+      // Utang (termasuk suntikan yang dilacak di modul ini) tetap liabilitas di neraca.
       await tx.walletLedger.create({
         data: {
           walletId: data.sourceWalletId,
           trxDate: parseWibDateInput(data.trxDate),
-          trxType: 'OTHER_INCOME',
+          trxType: 'TERIMA_UTANG',
           category: `Utang - ${data.creditorName}`,
           amount: Number(data.amount),
           note: data.note || null,
@@ -97,12 +98,12 @@ export async function POST(request: NextRequest) {
           createdBy: session.username,
         },
       })
-      // Debit wallet (keluar uang)
+      // Kas keluar. Memberi piutang = aset di neraca, bukan beban.
       await tx.walletLedger.create({
         data: {
           walletId: data.sourceWalletId,
           trxDate: parseWibDateInput(data.trxDate),
-          trxType: 'EXPENSE',
+          trxType: 'BERI_PIUTANG',
           category: `Piutang - ${data.debtorName}`,
           amount: -Number(data.amount),
           note: data.note || null,

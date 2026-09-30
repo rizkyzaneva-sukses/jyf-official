@@ -1,4 +1,5 @@
 import { prisma } from './prisma'
+import { ensureFinancingLedgersReclassified, financingExpenseWhere, financingIncomeWhere } from './financing-query'
 
 const RETUR_REGEX = /retur|return|dikembalikan/i
 
@@ -54,14 +55,20 @@ export type ProfitLossResult = {
   totalOrdersPaid: number
   ordersFound: number
   totalBayarVendor: number
+  /** Info saja — tidak mengurangi laba. Arus kas pendanaan + neraca. */
+  totalSuntikanModal: number
+  totalTerimaUtang: number
+  totalBayarUtang: number
 }
 
 /**
  * Laba Rugi basis kas — PENJUALAN = payout dicairkan di periode (releasedDate).
  * HPP dari orderNos yang cair; baris status RETUR dikeluarkan (stok kembali).
- * Bayar Vendor bukan OPEX. Fee platform sudah net di totalIncome (info only).
+ * Bayar Vendor bukan OPEX. Pembayaran utang pinjaman dan suntikan dana juga bukan
+ * beban — arus kas pendanaan, posisinya di neraca. Fee platform sudah net di totalIncome.
  */
 export async function computeProfitLoss(fromDate: Date, toDate: Date): Promise<ProfitLossResult> {
+  await ensureFinancingLedgersReclassified()
   const payoutsInPeriod = await prisma.payout.findMany({
     where: { releasedDate: { gte: fromDate, lte: toDate } },
     select: {
@@ -139,7 +146,12 @@ export async function computeProfitLoss(fromDate: Date, toDate: Date): Promise<P
     where: {
       trxType: 'EXPENSE',
       trxDate: { gte: fromDate, lte: toDate },
-      NOT: { category: { startsWith: 'Bayar Vendor' } },
+      NOT: {
+        OR: [
+          { category: { startsWith: 'Bayar Vendor' } },
+          ...(financingExpenseWhere().OR ?? []),
+        ],
+      },
     },
     _sum: { amount: true },
   })
@@ -198,10 +210,36 @@ export async function computeProfitLoss(fromDate: Date, toDate: Date): Promise<P
   }
 
   const otherIncomes = await prisma.walletLedger.aggregate({
-    where: { trxType: 'OTHER_INCOME', trxDate: { gte: fromDate, lte: toDate } },
+    where: {
+      trxType: 'OTHER_INCOME',
+      trxDate: { gte: fromDate, lte: toDate },
+      NOT: financingIncomeWhere(),
+    },
     _sum: { amount: true },
   })
   const otherIncome = otherIncomes._sum.amount || 0
+
+  const [suntikanAgg, terimaUtangAgg, bayarUtangAgg] = await Promise.all([
+    prisma.walletLedger.aggregate({
+      where: {
+        trxType: 'MODAL_MASUK',
+        category: { not: 'Modal Awal' },
+        trxDate: { gte: fromDate, lte: toDate },
+      },
+      _sum: { amount: true },
+    }),
+    prisma.utang.aggregate({
+      where: { trxDate: { gte: fromDate, lte: toDate } },
+      _sum: { amount: true },
+    }),
+    prisma.utangPayment.aggregate({
+      where: { paymentDate: { gte: fromDate, lte: toDate } },
+      _sum: { amount: true },
+    }),
+  ])
+  const totalSuntikanModal = suntikanAgg._sum.amount || 0
+  const totalTerimaUtang = terimaUtangAgg._sum.amount || 0
+  const totalBayarUtang = bayarUtangAgg._sum.amount || 0
 
   const labaBersihOperasional = labaKotor - bebanOperasional
   const labaBersih = labaBersihOperasional + otherIncome
@@ -227,5 +265,8 @@ export async function computeProfitLoss(fromDate: Date, toDate: Date): Promise<P
     totalOrdersPaid: payoutCount,
     ordersFound,
     totalBayarVendor,
+    totalSuntikanModal,
+    totalTerimaUtang,
+    totalBayarUtang,
   }
 }

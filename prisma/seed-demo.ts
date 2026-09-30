@@ -205,7 +205,7 @@ async function main() {
   await prisma.walletLedger.create({
     data: {
       walletId: kasUtama.id, trxDate: new Date(),
-      trxType: WalletTrxType.OTHER_INCOME, category: 'Suntikan Modal',
+      trxType: WalletTrxType.TERIMA_UTANG, category: `Utang - ${utang.creditorName}`,
       amount: 50000000, note: `Penerimaan Pinjaman ${utang.creditorName}`, createdBy: 'admin'
     }
   })
@@ -220,7 +220,7 @@ async function main() {
   await prisma.walletLedger.create({
     data: {
       walletId: kasUtama.id, trxDate: new Date(),
-      trxType: WalletTrxType.EXPENSE, category: 'Pembayaran Utang',
+      trxType: WalletTrxType.BAYAR_UTANG, category: `Bayar Utang - ${utang.creditorName}`,
       amount: -5000000, note: `Cicilan utang ${utang.creditorName}`, createdBy: 'admin'
     }
   })
@@ -239,7 +239,7 @@ async function main() {
   await prisma.walletLedger.create({
     data: {
       walletId: kasUtama.id, trxDate: new Date(),
-      trxType: WalletTrxType.EXPENSE, category: 'Piutang',
+      trxType: WalletTrxType.BERI_PIUTANG, category: `Piutang - ${piutang.debtorName}`,
       amount: -2000000, note: `Kasbon ${piutang.debtorName}`, createdBy: 'admin'
     }
   })

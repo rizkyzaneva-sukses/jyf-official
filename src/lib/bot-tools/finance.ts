@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { resolveRange, formatRp, fmtWIBDate } from './helpers'
 import { nowWIB as getNowWIB } from '@/lib/utils'
+import { sqlExcludeFinancingExpense } from '@/lib/financing-query'
 
 // ─────────────────────────────────────────────
 // Tool 6: Wallet summary — saldo per wallet & posisi kas
@@ -82,6 +83,7 @@ export async function getExpenseBreakdown(period?: string, startDate?: string, e
             COALESCE(SUM(ABS(amount)), 0)::bigint AS total_amount
         FROM wallet_ledger
         WHERE trx_type = 'EXPENSE'
+          ${sqlExcludeFinancingExpense('category')}
           AND trx_date >= ${range.gte}
           AND trx_date <= ${range.lte}
         GROUP BY category

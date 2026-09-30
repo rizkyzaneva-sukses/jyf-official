@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { apiSuccess, apiError, parseWibDateInput } from '@/lib/utils'
+import { signedWalletAmount } from '@/lib/financing-class'
 
 // POST /api/wallet/ledger/edit-requests/[id]/action — Approve or Reject (OWNER only)
 export async function POST(
@@ -58,8 +59,7 @@ export async function POST(
       const current = await prisma.walletLedger.findUnique({ where: { id: editRequest.ledgerId } })
       if (!current) return apiError('Transaksi asli tidak ditemukan')
       const newAmt = Number(c.newValue)
-      updateData.amount = current.trxType === 'EXPENSE' || current.trxType === 'PRIVE' || current.trxType === 'INVESTASI' || current.trxType === 'BAYAR_UTANG' || current.trxType === 'PENGEMBALIAN_MODAL' || current.trxType === 'TRANSFER'
-        ? -Math.abs(newAmt) : Math.abs(newAmt)
+      updateData.amount = signedWalletAmount(current.trxType, newAmt)
       auditChanges.push(`amount: ${c.oldValue} → ${newAmt}`)
     }
     if (c.field === 'trxDate') {

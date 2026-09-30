@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { apiSuccess, apiError, wibDateRange } from '@/lib/utils'
+import { ensureFinancingLedgersReclassified, financingExpenseWhere, financingIncomeWhere } from '@/lib/financing-query'
 
 // GET /api/reports/cash-flow?dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD
 export async function GET(request: NextRequest) {
@@ -15,6 +16,7 @@ export async function GET(request: NextRequest) {
   if (!dateFrom || !dateTo) return apiError('dateFrom dan dateTo wajib diisi')
 
   const { fromDate, toDate } = wibDateRange(dateFrom, dateTo)
+  await ensureFinancingLedgersReclassified()
 
   const prevDate = new Date(fromDate)
   prevDate.setMilliseconds(-1)
@@ -41,14 +43,22 @@ export async function GET(request: NextRequest) {
 
   // Penerimaan lain (OTHER_INCOME)
   const otherIncomeAgg = await prisma.walletLedger.aggregate({
-    where: { trxType: 'OTHER_INCOME', trxDate: { gte: fromDate, lte: toDate } },
+    where: {
+      trxType: 'OTHER_INCOME',
+      trxDate: { gte: fromDate, lte: toDate },
+      NOT: financingIncomeWhere(),
+    },
     _sum: { amount: true },
   })
   const penerimaanLain = otherIncomeAgg._sum.amount || 0
 
   // Beban operasional (EXPENSE)
   const expenseAgg = await prisma.walletLedger.aggregate({
-    where: { trxType: 'EXPENSE', trxDate: { gte: fromDate, lte: toDate } },
+    where: {
+      trxType: 'EXPENSE',
+      trxDate: { gte: fromDate, lte: toDate },
+      NOT: financingExpenseWhere(),
+    },
     _sum: { amount: true },
   })
   const bebanOperasional = expenseAgg._sum.amount || 0 // sudah negatif
@@ -146,6 +156,10 @@ export async function GET(request: NextRequest) {
     netInvestasi: netKasInvestasi,
     suntikanModal,
     prive: Math.abs(prive),
+    pencairanUtang: terimaPinjaman,
+    pelunasanUtangpokok: Math.abs(bayarPinjaman),
+    terimaPiutang,
+    beriPiutang: Math.abs(beriPiutang),
     netPendanaan: netKasPendanaan,
     kenaikanKasBersih: netPerubahanKas,
     // Detail tambahan

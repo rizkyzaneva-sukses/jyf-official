@@ -103,7 +103,7 @@ Tab: Purchase Orders, Vendors, Vendor Payments, Monitoring.
 Tab: Wallet & Ledger, Budget Iklan, Aset Tetap, Modal Awal, Payout, Utang & Piutang, Laporan.
 - Wallet & Ledger:
   - Wallet cards dengan saldo real-time
-  - 11 tipe transaksi: EXPENSE, OTHER_INCOME, TRANSFER, MODAL_MASUK, PRIVE, INVESTASI, VENDOR_PAYMENT, PENGEMBALIAN_MODAL, BAYAR_UTANG, TERIMA_PIUTANG_ND
+  - Tipe transaksi: EXPENSE (beban, masuk laba rugi), OTHER_INCOME (pendapatan lain), TRANSFER, MODAL_MASUK (suntikan modal ekuitas, bukan laba rugi), PRIVE, INVESTASI, VENDOR_PAYMENT (bayar vendor, bukan beban — HPP sudah di laba kotor), PENGEMBALIAN_MODAL, BAYAR_UTANG (pelunasan pinjaman/suntikan, bukan beban), TERIMA_UTANG (terima pinjaman/suntikan, bukan pendapatan), BERI_PIUTANG, TERIMA_PIUTANG_ND
   - TRANSFER: otomatis buat 2 entries (debit + credit)
   - Kategori expense dari Master Expense Categories
 - Budget Iklan: wallet khusus iklan (is_ads_budget=true). Mode: Spending / Deposit. ROAS per platform.
@@ -115,8 +115,10 @@ Tab: Wallet & Ledger, Budget Iklan, Aset Tetap, Modal Awal, Payout, Utang & Piut
   - Preview sebelum import, bulk delete, reset all (owner only)
   - Otomatis sync orders.trxDate dari payout.releasedDate
 - Utang & Piutang:
-  - Utang: catat hutang, record pembayaran (auto-update status: OUTSTANDING → PARTIAL → PAID)
-  - Piutang: catat piutang, record penagihan (auto-update status: OUTSTANDING → PARTIAL → COLLECTED)
+  - Utang: catat pinjaman atau suntikan dana. Kas bertambah, utang di neraca bertambah. Bukan pendapatan.
+  - Bayar utang: kas berkurang, utang di neraca berkurang. Bukan beban. Beda dengan bayar vendor (hutang dagang).
+  - Piutang non-dagang: kas keluar saat diberi, kas masuk saat ditagih. Bukan beban dan bukan pendapatan.
+  - Status utang: OUTSTANDING → PARTIAL → PAID. Status piutang: OUTSTANDING → PARTIAL → COLLECTED.
   - Marketplace receivables: outstanding Shopee/TikTok dari orders terkirim
   - Aging analysis: 0-7, 8-30, 31-60, >60 hari
 - Laporan (4 sub-tab):

@@ -156,7 +156,7 @@ export function LaporanTab() {
               <h2 className="text-lg font-bold text-white mb-1 text-center">Laporan Laba Rugi</h2>
               <p className="text-sm text-zinc-400 text-center mb-1">{dateFrom} s/d {dateTo}</p>
               <p className="text-[11px] text-zinc-600 text-center mb-1">Basis kas — PENJUALAN = order yang <b className="text-zinc-500">dicairkan</b> di periode ini (bukan tanggal order masuk)</p>
-              <p className="text-[11px] text-zinc-600 text-center mb-6">HPP exclude status retur · Bayar Vendor bukan OPEX · Fee platform sudah net di pencairan</p>
+              <p className="text-[11px] text-zinc-600 text-center mb-6">HPP exclude status retur · Bayar vendor, bayar utang, dan suntikan dana bukan beban · Fee platform sudah net di pencairan</p>
               <div className="space-y-4 max-w-3xl mx-auto text-sm">
 
                 {/* ── Pencairan Bersih (basis utama) ── */}
@@ -252,16 +252,36 @@ export function LaporanTab() {
                   <span className={data.labaBersih>=0?'text-emerald-500':'text-red-500'}>{formatRupiah(data.labaBersih)}</span>
                 </div>
 
-                {/* Info Bayar Vendor — tidak mengurangi laba, hanya informasi */}
-                {(data.totalBayarVendor??0) > 0 && (
+                {/* Kas yang bergerak, tapi bukan laba rugi */}
+                {((data.totalBayarVendor ?? 0) > 0 || (data.totalSuntikanModal ?? 0) > 0 || (data.totalTerimaUtang ?? 0) > 0 || (data.totalBayarUtang ?? 0) > 0) && (
                   <div className="mt-4 rounded-lg border border-blue-800/40 bg-blue-900/10 p-4 space-y-1">
-                    <p className="text-xs font-semibold text-blue-400 mb-2 uppercase">ℹ️ Informasi — Tidak Masuk Laba Rugi</p>
-                    <div className="flex justify-between text-sm text-blue-200/80">
-                      <span>Pembayaran Vendor (Hutang Dagang)</span>
-                      <span className="font-semibold">({formatRupiah(data.totalBayarVendor, true)})</span>
-                    </div>
+                    <p className="text-xs font-semibold text-blue-400 mb-2 uppercase">Informasi — Tidak Masuk Laba Rugi</p>
+                    {(data.totalBayarVendor ?? 0) > 0 && (
+                      <div className="flex justify-between text-sm text-blue-200/80">
+                        <span>Pembayaran Vendor (hutang dagang)</span>
+                        <span className="font-semibold">({formatRupiah(data.totalBayarVendor, true)})</span>
+                      </div>
+                    )}
+                    {(data.totalSuntikanModal ?? 0) > 0 && (
+                      <div className="flex justify-between text-sm text-blue-200/80">
+                        <span>Suntikan Modal (ekuitas)</span>
+                        <span className="font-semibold">{formatRupiah(data.totalSuntikanModal, true)}</span>
+                      </div>
+                    )}
+                    {(data.totalTerimaUtang ?? 0) > 0 && (
+                      <div className="flex justify-between text-sm text-blue-200/80">
+                        <span>Terima Pinjaman & Suntikan Dana</span>
+                        <span className="font-semibold">{formatRupiah(data.totalTerimaUtang, true)}</span>
+                      </div>
+                    )}
+                    {(data.totalBayarUtang ?? 0) > 0 && (
+                      <div className="flex justify-between text-sm text-blue-200/80">
+                        <span>Bayar Utang Pinjaman & Suntikan</span>
+                        <span className="font-semibold">({formatRupiah(data.totalBayarUtang, true)})</span>
+                      </div>
+                    )}
                     <p className="text-[10px] text-blue-400/60 leading-relaxed pt-1">
-                      Bayar vendor adalah pelunasan hutang dagang — bukan beban operasional. Dicatat di Arus Kas, bukan P&amp;L.
+                      Bayar vendor melunasi hutang dagang — HPP sudah dihitung saat barang terjual. Pinjaman dan suntikan dana hanya menggerakkan kas dan neraca (utang atau modal), bukan beban.
                     </p>
                   </div>
                 )}
@@ -288,7 +308,11 @@ export function LaporanTab() {
                 <div className="flex justify-between pl-4 text-zinc-300"><span>Pembelian Aset Tetap</span><span className="text-red-400">({formatRupiah(data.pembelianAsetTetap,true)})</span></div>
                 <div className="flex justify-between font-bold text-zinc-100 pl-4 py-2 border-b border-zinc-800"><span>Net Investasi</span><span>{formatRupiah(data.netInvestasi,true)}</span></div>
                 <div className="font-semibold text-base text-zinc-200 pt-4 border-b border-zinc-800 pb-2">Aktivitas Pendanaan</div>
-                <div className="flex justify-between pl-4 text-zinc-300"><span>Suntikan Modal</span><span className="text-emerald-400">{formatRupiah(data.suntikanModal,true)}</span></div>
+                <div className="flex justify-between pl-4 text-zinc-300"><span>Suntikan Modal (ekuitas)</span><span className="text-emerald-400">{formatRupiah(data.suntikanModal,true)}</span></div>
+                <div className="flex justify-between pl-4 text-zinc-300"><span>Terima Pinjaman & Suntikan Dana</span><span className="text-emerald-400">{formatRupiah(data.pencairanUtang ?? 0,true)}</span></div>
+                <div className="flex justify-between pl-4 text-zinc-300"><span>Pelunasan Utang Pinjaman & Suntikan</span><span className="text-red-400">({formatRupiah(data.pelunasanUtangpokok ?? 0,true)})</span></div>
+                <div className="flex justify-between pl-4 text-zinc-300"><span>Beri Piutang Non Dagang</span><span className="text-red-400">({formatRupiah(data.beriPiutang ?? 0,true)})</span></div>
+                <div className="flex justify-between pl-4 text-zinc-300"><span>Terima Piutang Non Dagang</span><span className="text-emerald-400">{formatRupiah(data.terimaPiutang ?? 0,true)}</span></div>
                 <div className="flex justify-between pl-4 text-zinc-300"><span>Prive</span><span className="text-red-400">({formatRupiah(data.prive,true)})</span></div>
                 <div className="flex justify-between font-bold text-zinc-100 pl-4 py-2 border-b border-zinc-800"><span>Net Pendanaan</span><span>{formatRupiah(data.netPendanaan,true)}</span></div>
                 <div className="flex justify-between py-3 border-y-2 border-zinc-700 font-bold text-xl text-blue-400 mt-6"><span>Kenaikan (Penurunan) Kas Bersih</span><span>{formatRupiah(data.kenaikanKasBersih,true)}</span></div>
@@ -316,7 +340,7 @@ export function LaporanTab() {
                 <div>
                   <h3 className="font-bold text-base text-white border-b-2 border-zinc-700 pb-2 mb-3">LIABILITAS & KEWAJIBAN</h3>
                   <div className="flex justify-between text-zinc-300 pl-2"><span>Utang Usaha (Vendor)</span><span>{formatRupiah(data.liabilitas.utangVendor,true)}</span></div>
-                  <div className="flex justify-between text-zinc-300 pl-2 mt-1"><span>Utang Pinjaman Pokok</span><span>{formatRupiah(data.liabilitas.utangPinjaman,true)}</span></div>
+                  <div className="flex justify-between text-zinc-300 pl-2 mt-1"><span>Utang Pinjaman & Suntikan Dana</span><span>{formatRupiah(data.liabilitas.utangPinjaman,true)}</span></div>
                   <div className="flex justify-between font-semibold text-zinc-200 mt-2 border-t border-zinc-800 pt-2 mb-8"><span>Total Liabilitas</span><span>{formatRupiah(data.liabilitas.total,true)}</span></div>
                   <h3 className="font-bold text-base text-white border-b-2 border-zinc-700 pb-2 mb-3">EKUITAS</h3>
                   <div className="flex justify-between text-zinc-300 pl-2"><span>Modal Disetor</span><span>{formatRupiah(data.ekuitas.modalDisetor,true)}</span></div>

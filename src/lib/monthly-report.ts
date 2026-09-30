@@ -5,6 +5,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { computeProfitLoss } from '@/lib/pnl-helpers'
+import { sqlExcludeFinancingExpense } from '@/lib/financing-query'
 import { todayWIBStr } from '@/lib/utils'
 
 function fmt(n: number): string {
@@ -167,6 +168,7 @@ export async function buildMonthlyReport(): Promise<string> {
               AND trx_date >= ${monthStart}
               AND trx_date <= ${monthEnd}
               AND (category IS NULL OR category NOT ILIKE 'Bayar Vendor%')
+              ${sqlExcludeFinancingExpense('category')}
             GROUP BY category
             ORDER BY total_amount DESC
             LIMIT 8

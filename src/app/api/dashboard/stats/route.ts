@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { apiSuccess, apiError, addWibDays, wibDateRange } from '@/lib/utils'
+import { sqlExcludeFinancingExpense } from '@/lib/financing-query'
 
 /**
  * GET /api/dashboard/stats
@@ -259,6 +260,7 @@ export async function GET(request: NextRequest) {
           JOIN wallets w ON w.id = l.wallet_id
           WHERE l.trx_type = 'EXPENSE'
             AND COALESCE(w.is_ads_budget, false) = false
+            ${sqlExcludeFinancingExpense('l.category')}
             AND l.trx_date >= ${gteDate} AND l.trx_date <= ${lteDate}
         `
       : prisma.$queryRaw<{ total: bigint }[]>`
@@ -267,6 +269,7 @@ export async function GET(request: NextRequest) {
           JOIN wallets w ON w.id = l.wallet_id
           WHERE l.trx_type = 'EXPENSE'
             AND COALESCE(w.is_ads_budget, false) = false
+            ${sqlExcludeFinancingExpense('l.category')}
         `,
 
     // ── PERIODE PEMBANDING (delta KPI) — COUNT(DISTINCT order_no) ──
@@ -316,6 +319,7 @@ export async function GET(request: NextRequest) {
           JOIN wallets w ON w.id = l.wallet_id
           WHERE l.trx_type = 'EXPENSE'
             AND COALESCE(w.is_ads_budget, false) = false
+            ${sqlExcludeFinancingExpense('l.category')}
             AND l.trx_date >= ${prevGte} AND l.trx_date <= ${prevLte}
         `
       : Promise.resolve([] as { total: bigint }[]),

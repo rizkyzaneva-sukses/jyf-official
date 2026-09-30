@@ -69,9 +69,14 @@ function AddModal({ type, wallets, onClose }: { type: 'utang' | 'piutang'; walle
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md p-6">
-        <h2 className="text-base font-semibold text-white mb-4">
+        <h2 className="text-base font-semibold text-white mb-1">
           Tambah {type === 'utang' ? 'Utang' : 'Piutang'}
         </h2>
+        <p className="text-[11px] text-zinc-500 mb-4 leading-relaxed">
+          {type === 'utang'
+            ? 'Pinjaman dan suntikan dana menambah kas serta utang di neraca. Bukan pendapatan dan bukan beban.'
+            : 'Memberi piutang mengurangi kas dan menambah piutang di neraca. Bukan beban.'}
+        </p>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-xs text-zinc-500 mb-1">Tipe</label>
@@ -269,10 +274,15 @@ function PayModal({
           </h2>
           <button onClick={onClose} className="text-zinc-500 hover:text-zinc-300"><X size={18} /></button>
         </div>
-        <p className="text-sm text-zinc-400 mb-4">
+        <p className="text-sm text-zinc-400 mb-1">
           {name}
           <span className="text-zinc-600 mx-1.5">·</span>
           Sisa <span className={isUtang ? 'text-red-400 font-medium' : 'text-yellow-400 font-medium'}>{formatRupiah(sisa, true)}</span>
+        </p>
+        <p className="text-[11px] text-zinc-500 mb-4 leading-relaxed">
+          {isUtang
+            ? 'Pelunasan pokok mengurangi kas dan utang di neraca. Bukan beban, beda dengan bayar vendor.'
+            : 'Penagihan menambah kas dan mengurangi piutang di neraca. Bukan pendapatan.'}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">

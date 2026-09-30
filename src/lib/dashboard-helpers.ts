@@ -7,6 +7,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { todayWIBStr, wibYmd, wibMonthEndStr, wibStartDaysAgo } from '@/lib/utils'
+import { sqlExcludeFinancingExpense } from '@/lib/financing-query'
 
 export const TARGET_KEY_PREFIX = 'target.'
 
@@ -131,6 +132,7 @@ export async function getBurnRate(days = 90): Promise<{
     SELECT COALESCE(SUM(ABS(amount)), 0)::bigint AS total
     FROM wallet_ledger
     WHERE trx_type = 'EXPENSE'
+      ${sqlExcludeFinancingExpense('category')}
       AND trx_date >= ${since}
   `
   const total = Number(rows[0]?.total ?? 0)

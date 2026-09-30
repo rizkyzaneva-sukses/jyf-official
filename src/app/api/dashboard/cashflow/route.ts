@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { addWibDays, apiSuccess, apiError, wibStartDaysAgo, wibYmd } from '@/lib/utils'
 import { getBurnRate, getTotalCash } from '@/lib/dashboard-helpers'
+import { sqlExcludeFinancingExpense } from '@/lib/financing-query'
 
 /**
  * GET /api/dashboard/cashflow?days=30
@@ -48,6 +49,7 @@ export async function GET(request: NextRequest) {
         COUNT(*)::bigint AS cnt
       FROM wallet_ledger
       WHERE trx_type = 'EXPENSE'
+        ${sqlExcludeFinancingExpense('category')}
         AND trx_date >= ${since}
       GROUP BY category
       ORDER BY total DESC

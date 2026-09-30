@@ -19,15 +19,17 @@ const TRX_TYPE_META: Record<string, { color: string; label: string }> = {
   VENDOR_PAYMENT:     { color: 'bg-yellow-900/50 text-yellow-300 border border-yellow-800 text-[10px] font-semibold px-2 py-0.5 rounded', label: 'Bayar Vendor' },
   PENGEMBALIAN_MODAL: { color: 'bg-teal-900/50 text-teal-300 border border-teal-800 text-[10px] font-semibold px-2 py-0.5 rounded',   label: 'Pengembalian Modal' },
   BAYAR_UTANG:        { color: 'bg-red-900/50 text-red-300 border border-red-800 text-[10px] font-semibold px-2 py-0.5 rounded',       label: 'Bayar Utang' },
+  TERIMA_UTANG:       { color: 'bg-purple-900/50 text-purple-300 border border-purple-800 text-[10px] font-semibold px-2 py-0.5 rounded', label: 'Terima Pinjaman' },
+  BERI_PIUTANG:       { color: 'bg-yellow-900/50 text-yellow-300 border border-yellow-800 text-[10px] font-semibold px-2 py-0.5 rounded', label: 'Beri Piutang' },
   TERIMA_PIUTANG_ND:  { color: 'bg-emerald-900/50 text-emerald-300 border border-emerald-800 text-[10px] font-semibold px-2 py-0.5 rounded', label: 'Terima Piutang Non Dagang' },
 }
 const TRX_TYPES = [
   { value: 'EXPENSE',            label: 'Beban Operasional',              tooltip: 'Beban operasional bisnis. Masuk laporan P&L.' },
   { value: 'OTHER_INCOME',       label: 'Pendapatan Lain',                tooltip: 'Pendapatan selain penjualan marketplace.' },
-  { value: 'MODAL_MASUK',        label: 'Suntikan Modal',                 tooltip: 'Suntikan modal dari pemilik ke bisnis. Kas bertambah.' },
-  { value: 'PENGEMBALIAN_MODAL', label: 'Pengembalian Modal',             tooltip: 'Perusahaan mengembalikan modal ke pemilik. Kas berkurang. Tidak masuk P&L.' },
-  { value: 'PRIVE',              label: 'Prive (Ambil Modal)',            tooltip: 'Pengambilan modal oleh pemilik. Kas berkurang.' },
-  { value: 'BAYAR_UTANG',        label: 'Pembayaran Utang',               tooltip: 'Pelunasan utang non-dagang. Kas berkurang. Tidak masuk P&L.' },
+  { value: 'MODAL_MASUK',        label: 'Suntikan Modal',                 tooltip: 'Suntikan modal pemilik yang menambah ekuitas. Kas bertambah, modal di neraca bertambah. Tidak masuk laba rugi.' },
+  { value: 'PENGEMBALIAN_MODAL', label: 'Pengembalian Modal',             tooltip: 'Perusahaan mengembalikan modal ke pemilik. Kas berkurang. Tidak masuk laba rugi.' },
+  { value: 'PRIVE',              label: 'Prive (Ambil Modal)',            tooltip: 'Pengambilan modal oleh pemilik. Kas berkurang. Tidak masuk laba rugi.' },
+  { value: 'BAYAR_UTANG',        label: 'Pembayaran Utang',               tooltip: 'Pelunasan pokok pinjaman atau suntikan dana. Kas berkurang. Bukan beban, beda dengan bayar vendor. Agar saldo utang di neraca ikut turun, catat lewat menu Utang & Piutang.' },
   { value: 'TERIMA_PIUTANG_ND',  label: 'Penerimaan Piutang Non Dagang', tooltip: 'Menerima piutang non-dagang. Kas bertambah. Tidak masuk P&L.' },
   { value: 'INVESTASI',          label: 'Pembelian Aset Tetap',           tooltip: 'Pembelian aset tetap.' },
   { value: 'TRANSFER',           label: 'Transfer Antar Wallet',          tooltip: 'Pindah dana antar wallet.' },
@@ -239,7 +241,7 @@ function AddTransactionModal({ onClose, wallets }: { onClose: () => void; wallet
               <label className="block text-xs text-zinc-500 mb-1 flex items-center">Jumlah (Rp) <Tooltip text="Masukkan nominal tanpa minus. Sistem otomatis menentukan arah."/></label>
               <input type="number" value={form.amount} onChange={e => set('amount', e.target.value)} placeholder="0" min="1"
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none" />
-              {form.amount && <p className="text-[10px] text-zinc-600 mt-1">{['EXPENSE','PRIVE','INVESTASI','BAYAR_UTANG','PENGEMBALIAN_MODAL'].includes(form.trxType)?'← Keluar':'→ Masuk'} wallet · {formatRupiah(parseInt(form.amount)||0, true)}</p>}
+              {form.amount && <p className="text-[10px] text-zinc-600 mt-1">{['EXPENSE','PRIVE','INVESTASI','BAYAR_UTANG','PENGEMBALIAN_MODAL','BERI_PIUTANG','VENDOR_PAYMENT'].includes(form.trxType)?'← Keluar':'→ Masuk'} wallet · {formatRupiah(parseInt(form.amount)||0, true)}</p>}
             </div>
             <div>
               <label className="block text-xs text-zinc-500 mb-1">Catatan</label>

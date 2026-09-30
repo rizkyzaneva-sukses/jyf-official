@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
   })
   const utangVendor = (poAgg._sum.totalAmount || 0) - (poAgg._sum.totalPaid || 0)
 
-  // Utang pinjaman (outstanding + partial)
+  // Utang pinjaman & suntikan dana yang dilacak sebagai utang (outstanding + partial)
   const utangAgg = await prisma.utang.aggregate({
     where: {
       status: { in: ['OUTSTANDING', 'PARTIAL'] },

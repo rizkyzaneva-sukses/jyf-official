@@ -254,20 +254,28 @@ export default function ReportsPage() {
 
                 <div className="font-semibold text-base text-zinc-200 pt-4 border-b border-zinc-800 pb-2">Aktivitas Pendanaan</div>
                 <div className="flex justify-between pl-4 text-zinc-300">
-                  <span>Suntikan Modal / Modal Awal</span>
+                  <span>Suntikan Modal (ekuitas)</span>
                   <span className="text-emerald-400">{formatRupiah(data.suntikanModal, true)}</span>
+                </div>
+                <div className="flex justify-between pl-4 text-zinc-300">
+                  <span>Terima Pinjaman & Suntikan Dana</span>
+                  <span className="text-emerald-400">{formatRupiah(data.pencairanUtang ?? 0, true)}</span>
+                </div>
+                <div className="flex justify-between pl-4 text-zinc-300">
+                  <span>Pelunasan Utang Pinjaman & Suntikan</span>
+                  <span className="text-red-400">({formatRupiah(data.pelunasanUtangpokok ?? 0, true)})</span>
+                </div>
+                <div className="flex justify-between pl-4 text-zinc-300">
+                  <span>Beri Piutang Non Dagang</span>
+                  <span className="text-red-400">({formatRupiah(data.beriPiutang ?? 0, true)})</span>
+                </div>
+                <div className="flex justify-between pl-4 text-zinc-300">
+                  <span>Terima Piutang Non Dagang</span>
+                  <span className="text-emerald-400">{formatRupiah(data.terimaPiutang ?? 0, true)}</span>
                 </div>
                 <div className="flex justify-between pl-4 text-zinc-300">
                   <span>Prive (Penarikan Ekuitas)</span>
                   <span className="text-red-400">({formatRupiah(data.prive, true)})</span>
-                </div>
-                <div className="flex justify-between pl-4 text-zinc-300">
-                  <span>Pencairan Utang Pinjaman</span>
-                  <span className="text-emerald-400">{formatRupiah(data.pencairanUtang, true)}</span>
-                </div>
-                <div className="flex justify-between pl-4 text-zinc-300">
-                  <span>Pelunasan Pinjaman Pokok</span>
-                  <span className="text-red-400">({formatRupiah(data.pelunasanUtangpokok, true)})</span>
                 </div>
                 <div className="flex justify-between font-bold text-zinc-100 pl-4 py-2 border-b border-zinc-800">
                   <span>Arus Kas Bersih dari Pendanaan</span>
@@ -341,7 +349,7 @@ export default function ReportsPage() {
                     <span>{formatRupiah(data.liabilitas.utangVendor, true)}</span>
                   </div>
                   <div className="flex justify-between text-zinc-300 pl-2 mt-1">
-                    <span>Utang Pinjaman Pokok</span>
+                    <span>Utang Pinjaman & Suntikan Dana</span>
                     <span>{formatRupiah(data.liabilitas.utangPinjaman, true)}</span>
                   </div>
                   <div className="flex justify-between font-semibold text-zinc-200 mt-2 border-t border-zinc-800 pt-2 mb-8">

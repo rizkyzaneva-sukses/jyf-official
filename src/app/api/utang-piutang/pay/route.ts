@@ -37,12 +37,12 @@ export async function POST(request: NextRequest) {
         where: { id: entityId },
         data: { amountPaid: newPaid, status },
       })
-      // Debit wallet (bayar utang)
+      // Kas keluar. Pelunasan pokok pinjaman/suntikan = turunnya utang di neraca, bukan beban.
       await tx.walletLedger.create({
         data: {
           walletId,
           trxDate: parseWibDateInput(paymentDate),
-          trxType: 'EXPENSE',
+          trxType: 'BAYAR_UTANG',
           category: `Bayar Utang - ${utang.creditorName}`,
           amount: -Math.abs(Number(amount)),
           note: note || null,
@@ -75,12 +75,12 @@ export async function POST(request: NextRequest) {
         where: { id: entityId },
         data: { amountCollected: newCollected, status },
       })
-      // Credit wallet (terima bayaran piutang)
+      // Kas masuk. Penagihan piutang non-dagang = turunnya piutang di neraca, bukan pendapatan.
       await tx.walletLedger.create({
         data: {
           walletId,
           trxDate: parseWibDateInput(paymentDate),
-          trxType: 'OTHER_INCOME',
+          trxType: 'TERIMA_PIUTANG_ND',
           category: `Terima Piutang - ${piutang.debtorName}`,
           amount: Math.abs(Number(amount)),
           note: note || null,

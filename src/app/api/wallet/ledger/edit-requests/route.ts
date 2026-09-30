@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { apiSuccess, apiError, getPagination, parseWibDateInput } from '@/lib/utils'
+import { signedWalletAmount } from '@/lib/financing-class'
 
 // GET /api/wallet/ledger/edit-requests — List edit requests
 export async function GET(request: NextRequest) {
@@ -59,8 +60,7 @@ export async function POST(request: NextRequest) {
     for (const c of changes) {
       if (c.field === 'amount') {
         const newAmt = Number(c.newValue)
-        updateData.amount = ledger.trxType === 'EXPENSE' || ledger.trxType === 'PRIVE' || ledger.trxType === 'INVESTASI' || ledger.trxType === 'BAYAR_UTANG' || ledger.trxType === 'PENGEMBALIAN_MODAL' || ledger.trxType === 'TRANSFER'
-          ? -Math.abs(newAmt) : Math.abs(newAmt)
+        updateData.amount = signedWalletAmount(ledger.trxType, newAmt)
         auditChanges.push(`amount: ${ledger.amount} → ${newAmt}`)
       }
       if (c.field === 'trxDate') {

@@ -43,7 +43,10 @@ export async function GET(request: NextRequest) {
     ['Pendapatan Lain', String(pl.otherIncome)],
     ['LABA BERSIH', String(pl.labaBersih)],
     [],
-    ['Info: Bayar Vendor (bukan OPEX)', String(pl.totalBayarVendor)],
+    ['Info: Bayar Vendor (bukan OPEX, hutang dagang)', String(pl.totalBayarVendor)],
+    ['Info: Suntikan Modal ekuitas (bukan laba rugi)', String(pl.totalSuntikanModal)],
+    ['Info: Terima pinjaman & suntikan dana (bukan pendapatan)', String(pl.totalTerimaUtang)],
+    ['Info: Bayar utang pinjaman & suntikan (bukan beban)', String(pl.totalBayarUtang)],
     ['Info: Order cair (omzet>0)', String(pl.totalOrdersPaid)],
     ['Info: Baris order HPP', String(pl.ordersFound)],
     [],
@@ -52,6 +55,8 @@ export async function GET(request: NextRequest) {
     ['HPP exclude status retur/return/dikembalikan'],
     ['Fee platform & AMS sudah ter-net di pencairan — jangan double-count'],
     ['Iklan = EXPENSE wallet is_ads_budget (bukan top-up TRANSFER)'],
+    ['Bayar utang pinjaman dan suntikan dana = arus kas pendanaan + neraca, bukan beban'],
+    ['Bayar vendor = pelunasan hutang dagang, bukan beban operasional'],
   ]
 
   const csv = rows

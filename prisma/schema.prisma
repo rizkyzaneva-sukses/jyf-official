@@ -89,6 +89,8 @@ enum WalletTrxType {
   PENGEMBALIAN_MODAL
   BAYAR_UTANG
   TERIMA_PIUTANG_ND
+  TERIMA_UTANG
+  BERI_PIUTANG
 }
 
 enum MasterCategoryType {

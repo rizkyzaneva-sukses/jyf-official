@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { apiSuccess, apiError, addWibDays, todayWIBStr, wibDayEnd, wibYmd } from '@/lib/utils'
+import { sqlExcludeFinancingExpense } from '@/lib/financing-query'
 import {
   ymWIB,
   monthRangeWIB,
@@ -79,6 +80,7 @@ export async function GET(_req: NextRequest) {
       JOIN wallets w ON w.id = l.wallet_id
       WHERE l.trx_type = 'EXPENSE'
         AND COALESCE(w.is_ads_budget, false) = false
+        ${sqlExcludeFinancingExpense('l.category')}
         AND l.trx_date >= ${monthStart} AND l.trx_date <= ${lteToday}
     `,
     prisma.$queryRaw<{ omzet: bigint; hpp: bigint }[]>`
@@ -105,6 +107,7 @@ export async function GET(_req: NextRequest) {
       JOIN wallets w ON w.id = l.wallet_id
       WHERE l.trx_type = 'EXPENSE'
         AND COALESCE(w.is_ads_budget, false) = false
+        ${sqlExcludeFinancingExpense('l.category')}
         AND l.trx_date >= ${prevStart} AND l.trx_date <= ${prevEnd}
     `,
     getTotalCash(),

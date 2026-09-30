@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { apiSuccess, apiError, getPagination, parseWibDateInput, wibDateRange, wibDayEnd, wibDayStart } from '@/lib/utils'
+import { signedWalletAmount } from '@/lib/financing-class'
 
 // GET /api/wallet/ledger
 export async function GET(request: NextRequest) {
@@ -101,11 +102,9 @@ export async function POST(request: NextRequest) {
     return apiSuccess({ message: 'Transfer berhasil' }, 201)
   }
 
-  // Tentukan tanda amount berdasarkan tipe transaksi
-  // Negatif (keluar wallet): EXPENSE, PRIVE, INVESTASI, BAYAR_UTANG, PENGEMBALIAN_MODAL
-  // Positif (masuk wallet): PAYOUT, OTHER_INCOME, MODAL_MASUK, TERIMA_PIUTANG_ND
-  const outTypes = ['EXPENSE', 'PRIVE', 'INVESTASI', 'BAYAR_UTANG', 'PENGEMBALIAN_MODAL']
-  const finalAmount = outTypes.includes(trxType) ? -Math.abs(amount) : Math.abs(amount)
+  // Keluar kas: beban, prive, investasi, bayar utang, pengembalian modal, bayar vendor, beri piutang.
+  // Masuk kas: payout, pendapatan lain, suntikan modal, terima utang, terima piutang.
+  const finalAmount = signedWalletAmount(trxType, amount)
 
   const entry = await prisma.walletLedger.create({
     data: {

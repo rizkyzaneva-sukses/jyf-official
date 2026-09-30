@@ -33,6 +33,8 @@ export async function register() {
         const { broadcastTelegramReport }         = await import('@/lib/telegram')
         const { getReportSchedule }               = await import('@/lib/report-schedule')
         const { prisma }                          = await import('@/lib/prisma')
+        const { ensureFinancingLedgersReclassified } = await import('@/lib/financing-query')
+        await ensureFinancingLedgersReclassified()
 
         // Cek apakah laporan sudah terkirim hari ini (dari DB — tahan restart)
         async function isAlreadySent(settingKey: string, todayStr: string): Promise<boolean> {
