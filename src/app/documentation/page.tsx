@@ -291,13 +291,13 @@ const ROLES: RoleData[] = [
         icon: LayoutDashboard, color: 'text-emerald-400',
         title: 'Dashboard', path: '/dashboard',
         desc: 'Ringkasan KPI real-time bisnis.',
-        keyActions: ['Filter tanggal fleksibel (Hari ini, Minggu, Bulan)', 'ROAS per platform otomatis', 'Aging backlog visual', 'Top Provinsi & Kota'],
+        keyActions: ['Filter tanggal fleksibel (Hari ini, Minggu, Bulan)', 'ROAS per platform otomatis', 'Top 10 Produk Terlaris berbasis GMV order', 'Aging backlog visual'],
       },
       {
         icon: ShoppingCart, color: 'text-blue-400',
         title: 'Pesanan', path: '/orders',
         desc: 'Manajemen order dari semua marketplace.',
-        keyActions: ['Import CSV TikTok/Shopee', 'Edit & hapus order (Owner only)', 'Bulk delete', 'Export ke CSV'],
+        keyActions: ['Import Excel/CSV Shopee, TikTok, Lazada', 'Preview SKU → nama Master Produk', 'Edit & hapus order (Owner only)', 'Export ke CSV'],
       },
       {
         icon: ScanLine, color: 'text-cyan-400',
@@ -396,8 +396,8 @@ const ROLES: RoleData[] = [
         icon: Wallet,
         title: 'Catat Transaksi Harian',
         path: '/finance',
-        desc: 'Buka Finance → Wallet & Ledger. Catat semua pengeluaran operasional (bayar kurir, supplies, dll) dan pemasukan yang belum tercatat. Pastikan saldo wallet sesuai rekening fisik.',
-        tips: ['Gunakan kategori yang tepat agar masuk L/R report dengan benar', 'TRANSFER antar wallet tidak mengurangi total saldo'],
+        desc: 'Buka Finance → Wallet & Ledger. Catat pengeluaran satuan atau gunakan Import Pengeluaran untuk banyak transaksi sekaligus. Pastikan saldo wallet sesuai rekening fisik.',
+        tips: ['Download template Import Pengeluaran; preview harus bebas error sebelum konfirmasi', 'Gunakan kategori yang tepat agar masuk L/R report dengan benar', 'TRANSFER antar wallet tidak mengurangi total saldo'],
       },
       {
         time: '09.00',
@@ -483,7 +483,7 @@ const ROLES: RoleData[] = [
         icon: Wallet, color: 'text-violet-400',
         title: 'Finance Room', path: '/finance',
         desc: 'Keuangan lengkap (kecuali Modal Awal).',
-        keyActions: ['Wallet & Ledger harian', 'Budget Iklan per platform', 'Aset Tetap & depresiasi', 'Payout, Utang/Piutang, Laporan'],
+        keyActions: ['Wallet & Ledger + import massal pengeluaran', 'Budget Iklan per platform', 'Aset Tetap & depresiasi', 'Payout, Utang/Piutang, Laporan'],
       },
       {
         icon: Users, color: 'text-pink-400',
@@ -715,6 +715,65 @@ const ROLE_BADGE: Record<RoleKey, string> = {
   EXTERNAL: 'bg-purple-900/50 text-purple-400 border-purple-700',
 }
 
+const QUICK_START_STEPS: WorkflowStep[] = [
+  {
+    title: 'Setup master data sekali di awal',
+    path: '/inventory?tab=master',
+    icon: Package,
+    desc: 'Masukkan semua Master Produk dengan SKU, Nama Produk, HPP, ROP, dan lead time. Nama produk saat import order akan selalu mengambil data dari Master Produk berdasarkan SKU.',
+    tips: ['Pastikan SKU unik dan konsisten dengan SKU dari marketplace', 'Contoh: J-SDL23BK/42 → RONIN - BLACK 42'],
+  },
+  {
+    title: 'Siapkan wallet, kategori, dan fee',
+    path: '/finance?tab=wallet',
+    icon: Wallet,
+    desc: 'Buat wallet kas/bank yang digunakan, siapkan kategori pengeluaran, lalu Owner mengatur persentase fee marketplace di Owner Room. Ini menjadi dasar saldo, omzet bersih, dan laporan.',
+    tips: ['Gunakan nama wallet yang sama dengan rekening fisik', 'Kategori pengeluaran menentukan pengelompokan di Laba Rugi'],
+  },
+  {
+    title: 'Mapping SKU gabungan bila ada bundle',
+    path: '/produk-gabungan',
+    icon: GitMerge,
+    desc: 'Jika satu SKU marketplace berisi beberapa barang, buat mapping Produk Gabungan sebelum import order. Sistem akan memecah bundle ke SKU internal dan membagi omzetnya.',
+    tips: ['Lewati langkah ini bila semua SKU marketplace adalah SKU tunggal'],
+  },
+  {
+    title: 'Import pesanan marketplace',
+    path: '/orders',
+    icon: ShoppingCart,
+    desc: 'Upload file mentah Shopee, TikTok, atau Lazada. Periksa preview: SKU, nama produk master, jumlah baris siap import, duplikat, dan total omzet sebelum konfirmasi.',
+    tips: ['Jika nama produk masih belum sesuai, lengkapi Master Produk untuk SKU tersebut terlebih dahulu', 'Import order adalah sumber Dashboard dan Produk Terlaris berdasarkan GMV'],
+  },
+  {
+    title: 'Jalankan operasional gudang dan pengiriman',
+    path: '/scan-order',
+    icon: ScanLine,
+    desc: 'Catat barang masuk, lakukan scan resi setelah paket diberikan ke kurir, dan proses retur melalui Inventori. Pantau backlog dan stok kritis setiap hari.',
+    tips: ['Gunakan Alerts untuk prioritas order tertunda dan SKU di bawah ROP'],
+  },
+  {
+    title: 'Catat arus kas dan pengeluaran',
+    path: '/finance?tab=wallet',
+    icon: Receipt,
+    desc: 'Catat transaksi satuan lewat Tambah Transaksi, atau gunakan Import Pengeluaran untuk banyak transaksi sekaligus. Download template, isi Tanggal, Wallet, Kategori, Nominal, lalu perbaiki error pada preview sebelum impor.',
+    tips: ['Nominal pengeluaran ditulis positif tanpa minus; sistem otomatis mencatat sebagai EXPENSE', 'Top-up wallet iklan adalah TRANSFER, sedangkan spending iklan adalah EXPENSE'],
+  },
+  {
+    title: 'Import payout lalu rekonsiliasi',
+    path: '/finance?tab=payout',
+    icon: TrendingUp,
+    desc: 'Upload settlement marketplace untuk mencatat pencairan. Setelah itu buka Tools Finance untuk memeriksa order yang belum cair, payout tanpa order, dan transaksi negatif.',
+    tips: ['Payout adalah basis laporan kas/Laba Rugi, sedangkan order masuk adalah basis operasional dan GMV'],
+  },
+  {
+    title: 'Review dashboard dan lakukan closing',
+    path: '/dashboard',
+    icon: ClipboardCheck,
+    desc: 'Gunakan filter tanggal Dashboard untuk memantau KPI, ROAS, saldo, dan Top 10 Produk Terlaris berdasarkan GMV order masuk. Pada akhir periode, jalankan Closing checklist dan review Laporan.',
+    tips: ['Produk Terlaris berasal dari order masuk, bukan payout', 'Lakukan backup sebelum perubahan data besar'],
+  },
+]
+
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function ModuleCard({ mod }: { mod: Module }) {
@@ -886,9 +945,53 @@ function WorkflowCard({ step, index }: { step: WorkflowStep; index: number }) {
   )
 }
 
+function QuickStartSection() {
+  return (
+    <div className="max-w-3xl mb-10">
+      <div className="bg-emerald-950/20 border border-emerald-900/60 rounded-2xl p-5 mb-6">
+        <p className="text-base font-semibold text-emerald-300">Quick Start ELYASR Ops</p>
+        <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+          Ikuti alur ini saat pertama menggunakan aplikasi dan saat menjalankan operasional harian. Klik tiap langkah untuk melihat detail dan tipsnya.
+        </p>
+      </div>
+      <div>
+        {QUICK_START_STEPS.map((step, index) => (
+          <WorkflowCard key={step.title} step={step} index={index} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 const FAQ_ITEMS: { q: string; a: string[] }[] = [
+  {
+    q: 'Quick Start: urutan penggunaan aplikasi yang benar',
+    a: [
+      '1) Lengkapi Master Produk (SKU, Nama Produk, HPP, ROP), wallet, kategori pengeluaran, dan fee marketplace.',
+      '2) Buat mapping Produk Gabungan bila ada SKU bundle, lalu import pesanan mentah marketplace.',
+      '3) Jalankan scan stok/resi, catat pengeluaran dan iklan, lalu import payout saat settlement tersedia.',
+      '4) Pantau Dashboard untuk GMV order dan Top 10 Produk; gunakan Finance → Laporan/Tools untuk angka kas dan closing.',
+      'Versi interaktif alurnya ada di tab Quick Start pada halaman Panduan.',
+    ],
+  },
+  {
+    q: 'Mengapa nama produk saat preview order harus sesuai Master Produk?',
+    a: [
+      'Nama Produk dicocokkan berdasarkan SKU: Master Produk menjadi sumber utama, nama marketplace menjadi fallback, dan SKU tampil hanya jika belum ada nama di keduanya.',
+      'Contoh: jika Master Produk berisi J-SDL23BK/42 dengan nama RONIN - BLACK 42, preview dan order baru akan menampilkan RONIN - BLACK 42.',
+      'Jika preview masih menampilkan SKU, cek apakah SKU tersebut sudah ada dan penulisannya sama di Inventori → Master Produk.',
+    ],
+  },
+  {
+    q: 'Cara import pengeluaran massal',
+    a: [
+      'Buka Finance → Wallet & Ledger → Import Pengeluaran → Download Template.',
+      'Isi kolom Tanggal, Wallet, Kategori, Nominal, dan Catatan. Wallet serta Kategori harus sesuai master yang aktif; Nominal ditulis positif tanpa minus atau desimal.',
+      'Unggah file Excel/CSV. Periksa jumlah baris valid, total pengeluaran, serta daftar error. Sistem hanya mengimpor jika semua baris valid agar ledger tidak tercatat sebagian.',
+    ],
+  },
   {
     q: 'Apa beda Omzet Ops vs Laba Rugi (PENJUALAN)?',
     a: [
@@ -1052,7 +1155,7 @@ function FaqSection() {
   )
 }
 
-type DocTab = RoleKey | 'FAQ' | 'DETAIL'
+type DocTab = RoleKey | 'QUICK_START' | 'FAQ' | 'DETAIL'
 
 const APP_CATALOG: {
   domain: string
@@ -1061,8 +1164,8 @@ const APP_CATALOG: {
   {
     domain: 'Sales & Ops',
     items: [
-      { name: 'Dashboard', path: '/dashboard', roles: 'OWNER · FINANCE · STAFF', desc: 'KPI scoreboard, cashflow, action center, inventory health. STAFF lihat fokus ops.' },
-      { name: 'Pesanan', path: '/orders', roles: 'OWNER · FINANCE · STAFF', desc: 'Import CSV Shopee/TikTok, filter status (termasuk Retur), export, isi HPP kosong.' },
+      { name: 'Dashboard', path: '/dashboard', roles: 'OWNER · FINANCE · STAFF', desc: 'KPI scoreboard, cashflow, action center, inventory health, dan Top 10 Produk Terlaris berdasarkan GMV order masuk.' },
+      { name: 'Pesanan', path: '/orders', roles: 'OWNER · FINANCE · STAFF', desc: 'Import Excel/CSV Shopee, TikTok, Lazada; preview SKU dan nama dari Master Produk; filter status, export, isi HPP kosong.' },
       { name: 'Scan Resi', path: '/scan-order', roles: 'OWNER · FINANCE · STAFF', desc: 'Scan AWB pack/kirim, bulk CSV, deteksi duplikat.' },
       { name: 'CRM', path: '/crm', roles: 'OWNER · FINANCE', desc: 'Daftar buyer unik dari order (omzet & frekuensi).' },
       { name: 'Produk Gabungan', path: '/produk-gabungan', roles: 'OWNER · FINANCE', desc: 'Mapping SKU combo marketplace → SKU internal (HPP import).' },
@@ -1092,7 +1195,7 @@ const APP_CATALOG: {
   {
     domain: 'Finance Room',
     items: [
-      { name: 'Wallet & Ledger', path: '/finance?tab=wallet', roles: 'OWNER · FINANCE', desc: 'Multi-wallet, EXPENSE/TRANSFER/PAYOUT, edit request FINANCE → approve OWNER.' },
+      { name: 'Wallet & Ledger', path: '/finance?tab=wallet', roles: 'OWNER · FINANCE', desc: 'Multi-wallet, EXPENSE/TRANSFER/PAYOUT, import massal pengeluaran + template, edit request FINANCE → approve OWNER.' },
       { name: 'Budget Iklan', path: '/finance?tab=iklan', roles: 'OWNER · FINANCE', desc: 'Top-up TRANSFER + Catat Spending EXPENSE di wallet isAdsBudget. ROAS dashboard.' },
       { name: 'Aset Tetap', path: '/finance?tab=aset', roles: 'OWNER · FINANCE', desc: 'Penyusutan masuk Laba Rugi otomatis.' },
       { name: 'Modal Awal', path: '/finance?tab=modal', roles: 'OWNER', desc: 'Modal pembuka per wallet.' },
@@ -1172,11 +1275,11 @@ function DetailAppSection() {
 }
 
 export default function DocumentationPage() {
-  const [activeRole, setActiveRole] = useState<DocTab>('OWNER')
+  const [activeRole, setActiveRole] = useState<DocTab>('QUICK_START')
   const [showOwnerSecrets, setShowOwnerSecrets] = useState(false)
   const [userRole, setUserRole] = useState<RoleKey | null>(null)
   const { user } = useAuth()
-  const role = activeRole === 'FAQ' || activeRole === 'DETAIL' ? null : ROLES.find(r => r.key === activeRole)!
+  const role = activeRole === 'QUICK_START' || activeRole === 'FAQ' || activeRole === 'DETAIL' ? null : ROLES.find(r => r.key === activeRole)!
 
   useEffect(() => {
     setUserRole(user?.userRole ?? null)
@@ -1191,13 +1294,24 @@ export default function DocumentationPage() {
             Panduan Penggunaan
           </h1>
           <p className="text-sm text-zinc-500 mt-1">
-            Workflow per role · Detail App · FAQ perhitungan — ELYASR Ops
+            Quick Start · Workflow per role · Detail App · FAQ perhitungan — ELYASR Ops
           </p>
         </div>
       </div>
 
       {/* Role Tab Selector */}
       <div className="flex gap-1.5 mb-6 bg-zinc-900/60 border border-zinc-800 rounded-xl p-1.5 w-fit flex-wrap">
+        <button
+          type="button"
+          onClick={() => setActiveRole('QUICK_START')}
+          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+            activeRole === 'QUICK_START'
+              ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-800/60 shadow-sm'
+              : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60'
+          }`}
+        >
+          Quick Start
+        </button>
         {ROLES.map(r => (
           <button
             key={r.key}
@@ -1235,7 +1349,9 @@ export default function DocumentationPage() {
         </button>
       </div>
 
-      {activeRole === 'FAQ' ? (
+      {activeRole === 'QUICK_START' ? (
+        <QuickStartSection />
+      ) : activeRole === 'FAQ' ? (
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb size={14} className="text-amber-500" />
@@ -1422,7 +1538,7 @@ export default function DocumentationPage() {
 
       {/* Footer */}
       <div className="mt-10 pt-6 border-t border-zinc-800 flex items-center justify-between">
-        <p className="text-xs text-zinc-600">ELYASR Management System · Panduan diperbarui 02 Agu 2026 · {userRole === 'OWNER' && <span className="text-emerald-600">✓ Owner Access</span>}</p>
+        <p className="text-xs text-zinc-600">ELYASR Management System · Panduan diperbarui 01 Okt 2026 · {userRole === 'OWNER' && <span className="text-emerald-600">✓ Owner Access</span>}</p>
         <div className="flex gap-2">
           {ROLES.map(r => (
             <span key={r.key} className={`text-[10px] font-bold px-2 py-0.5 rounded border ${ROLE_BADGE[r.key]}`}>
