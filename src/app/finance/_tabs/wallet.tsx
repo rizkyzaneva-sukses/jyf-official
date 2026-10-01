@@ -1,11 +1,12 @@
 'use client'
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { formatRupiah, formatDate, downloadCSV, todayWIBStr } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
 import { useAuth } from '@/components/providers'
-import { Plus, Download, Settings, ChevronLeft, ChevronRight, HelpCircle, X, ChevronDown, Search, Pencil } from 'lucide-react'
+import { Plus, Download, Settings, ChevronLeft, ChevronRight, HelpCircle, X, ChevronDown, Search, Pencil, Upload, FileSpreadsheet, Loader2, AlertTriangle } from 'lucide-react'
+import * as XLSX from 'xlsx'
 
 
 const TRX_TYPE_META: Record<string, { color: string; label: string }> = {
@@ -271,6 +272,236 @@ function AddTransactionModal({ onClose, wallets }: { onClose: () => void; wallet
   )
 }
 
+type ExpenseImportRow = {
+  rowNumber: number
+  tanggal: unknown
+  wallet: unknown
+  kategori: unknown
+  nominal: unknown
+  catatan: unknown
+}
+
+type ExpenseImportPreview = {
+  totalRows: number
+  validRows: number
+  invalidRows: number
+  totalAmount: number
+  errors: { rowNumber: number; message: string }[]
+}
+
+const IMPORT_COLUMNS = {
+  tanggal: ['tanggal', 'date'],
+  wallet: ['wallet', 'nama wallet'],
+  kategori: ['kategori', 'category'],
+  nominal: ['nominal', 'jumlah', 'amount'],
+  catatan: ['catatan', 'keterangan', 'note', 'deskripsi'],
+}
+
+function normalizedImportHeader(value: string): string {
+  return value.replace(/\uFEFF/g, '').trim().toLocaleLowerCase('id-ID').replace(/\s+/g, ' ')
+}
+
+function ExpenseImportModal({ onClose, wallets }: { onClose: () => void; wallets: any[] }) {
+  const qc = useQueryClient()
+  const { toast } = useToast()
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [rows, setRows] = useState<ExpenseImportRow[]>([])
+  const [preview, setPreview] = useState<ExpenseImportPreview | null>(null)
+  const [fileName, setFileName] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [importing, setImporting] = useState(false)
+
+  const { data: catData } = useQuery({
+    queryKey: ['expense-categories'],
+    queryFn: async () => fetch('/api/finance/categories').then(r => r.json()).then(d => d.data),
+  })
+  const categories: any[] = catData?.categories ?? []
+
+  const downloadTemplate = () => {
+    const workbook = XLSX.utils.book_new()
+    const inputSheet = XLSX.utils.aoa_to_sheet([['Tanggal', 'Wallet', 'Kategori', 'Nominal', 'Catatan']])
+    inputSheet['!cols'] = [
+      { wch: 15 }, { wch: 28 }, { wch: 32 }, { wch: 16 }, { wch: 45 },
+    ]
+
+    const guideRows: unknown[][] = [
+      ['Template Import Pengeluaran'],
+      [],
+      ['Kolom', 'Wajib', 'Keterangan'],
+      ['Tanggal', 'Ya', 'Gunakan format YYYY-MM-DD, contoh: 2026-10-01'],
+      ['Wallet', 'Ya', 'Harus persis dengan nama wallet aktif'],
+      ['Kategori', 'Ya', 'Harus persis dengan kategori pengeluaran aktif'],
+      ['Nominal', 'Ya', 'Rupiah positif tanpa minus atau desimal, contoh: 150000'],
+      ['Catatan', 'Tidak', 'Keterangan tambahan transaksi'],
+      [],
+      ['Wallet aktif'],
+      ...wallets.map(wallet => [wallet.name]),
+      [],
+      ['Kategori aktif'],
+      ...categories.map(category => [category.name]),
+    ]
+    const guideSheet = XLSX.utils.aoa_to_sheet(guideRows)
+    guideSheet['!cols'] = [{ wch: 32 }, { wch: 12 }, { wch: 70 }]
+    XLSX.utils.book_append_sheet(workbook, inputSheet, 'Pengeluaran')
+    XLSX.utils.book_append_sheet(workbook, guideSheet, 'Petunjuk')
+    XLSX.writeFile(workbook, 'template_import_pengeluaran.xlsx')
+  }
+
+  const previewRows = async (nextRows: ExpenseImportRow[], name: string) => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/wallet/ledger/import-expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'preview', rows: nextRows }),
+      })
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error)
+      setRows(nextRows)
+      setFileName(name)
+      setPreview(json.data)
+    } catch (error: any) {
+      setRows([])
+      setPreview(null)
+      setFileName('')
+      toast({ title: error.message || 'Gagal membaca file', type: 'error' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    const ext = file.name.split('.').pop()?.toLowerCase()
+    if (!['xlsx', 'xls', 'csv'].includes(ext || '')) {
+      toast({ title: 'Gunakan file Excel atau CSV (.xlsx, .xls, .csv)', type: 'error' })
+      return
+    }
+
+    try {
+      const buffer = await file.arrayBuffer()
+      const workbook = XLSX.read(buffer, { type: 'array', cellDates: true })
+      const worksheet = workbook.Sheets.Pengeluaran ?? workbook.Sheets[workbook.SheetNames[0]]
+      if (!worksheet) throw new Error('Sheet pengeluaran tidak ditemukan')
+      const sheetRows = XLSX.utils.sheet_to_json<unknown[]>(worksheet, { header: 1, defval: '', raw: false, dateNF: 'yyyy-mm-dd', blankrows: true }) as unknown[][]
+      const headers = (sheetRows[0] ?? []).map(value => normalizedImportHeader(String(value)))
+      const missing = Object.entries(IMPORT_COLUMNS)
+        .filter(([field, aliases]) => field !== 'catatan' && !headers.some(header => aliases.includes(header)))
+        .map(([field]) => ({ tanggal: 'Tanggal', wallet: 'Wallet', kategori: 'Kategori', nominal: 'Nominal' }[field] || field))
+      if (missing.length) throw new Error(`Kolom wajib belum ditemukan: ${missing.join(', ')}`)
+
+      const columnIndex = (aliases: string[]) => headers.findIndex(header => aliases.includes(header))
+      const dateColumn = columnIndex(IMPORT_COLUMNS.tanggal)
+      const walletColumn = columnIndex(IMPORT_COLUMNS.wallet)
+      const categoryColumn = columnIndex(IMPORT_COLUMNS.kategori)
+      const amountColumn = columnIndex(IMPORT_COLUMNS.nominal)
+      const noteColumn = columnIndex(IMPORT_COLUMNS.catatan)
+
+      const importRows = sheetRows.slice(1).map((row, index) => ({
+        rowNumber: index + 2,
+        tanggal: row[dateColumn],
+        wallet: row[walletColumn],
+        kategori: row[categoryColumn],
+        nominal: row[amountColumn],
+        catatan: noteColumn >= 0 ? row[noteColumn] : '',
+      })).filter(row => [row.tanggal, row.wallet, row.kategori, row.nominal, row.catatan].some(value => String(value ?? '').trim() !== ''))
+      if (!importRows.length) throw new Error('File tidak memiliki baris data')
+      await previewRows(importRows, file.name)
+    } catch (error: any) {
+      toast({ title: error.message || 'File tidak dapat dibaca', type: 'error' })
+    }
+  }
+
+  const handleImport = async () => {
+    if (!preview || preview.invalidRows > 0 || !rows.length) return
+    setImporting(true)
+    try {
+      const response = await fetch('/api/wallet/ledger/import-expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'import', rows }),
+      })
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error)
+      toast({ title: json.data.message, type: 'success' })
+      qc.invalidateQueries({ queryKey: ['wallets'] })
+      qc.invalidateQueries({ queryKey: ['wallet-ledger'] })
+      onClose()
+    } catch (error: any) {
+      toast({ title: error.message || 'Impor pengeluaran gagal', type: 'error' })
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-3xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 className="text-base font-semibold text-white">Import Massal Pengeluaran</h2>
+            <p className="text-xs text-zinc-500 mt-1">Semua baris akan dicatat sebagai beban dan mengurangi saldo wallet.</p>
+          </div>
+          <button onClick={onClose} disabled={loading || importing} className="text-zinc-500 hover:text-zinc-300 disabled:opacity-50"><X size={18} /></button>
+        </div>
+
+        <div className="bg-zinc-800/60 border border-zinc-700 rounded-xl p-3 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-zinc-300 font-medium">Mulai dari template Excel</p>
+            <p>Kolom wajib: Tanggal, Wallet, Kategori, Nominal. Catatan opsional.</p>
+          </div>
+          <button onClick={downloadTemplate} className="shrink-0 flex items-center justify-center gap-1.5 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded-lg text-xs">
+            <Download size={14} />Download Template
+          </button>
+        </div>
+
+        <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleFile} />
+        <button type="button" onClick={() => fileRef.current?.click()} disabled={loading || importing}
+          className="w-full border-2 border-dashed border-zinc-700 hover:border-emerald-600 disabled:opacity-50 rounded-xl p-6 text-center transition-colors">
+          {loading ? <Loader2 size={24} className="mx-auto mb-2 text-emerald-400 animate-spin" /> : <Upload size={24} className="mx-auto mb-2 text-zinc-500" />}
+          <p className="text-sm text-zinc-300">{loading ? 'Memvalidasi data...' : 'Pilih file pengeluaran'}</p>
+          <p className="text-xs text-zinc-600 mt-1">Excel atau CSV, maksimal 5.000 baris</p>
+        </button>
+
+        {preview && (
+          <div className="mt-4 space-y-3">
+            <p className="text-xs text-zinc-500 truncate"><FileSpreadsheet size={13} className="inline mr-1.5" />{fileName}</p>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="rounded-lg bg-zinc-800 p-3"><p className="text-[10px] text-zinc-500">Baris valid</p><p className="text-sm font-semibold text-emerald-400">{preview.validRows.toLocaleString('id-ID')}</p></div>
+              <div className="rounded-lg bg-zinc-800 p-3"><p className="text-[10px] text-zinc-500">Perlu diperbaiki</p><p className={`text-sm font-semibold ${preview.invalidRows ? 'text-red-400' : 'text-zinc-300'}`}>{preview.invalidRows.toLocaleString('id-ID')}</p></div>
+              <div className="rounded-lg bg-zinc-800 p-3"><p className="text-[10px] text-zinc-500">Total pengeluaran</p><p className="text-sm font-semibold text-red-400">{formatRupiah(preview.totalAmount, true)}</p></div>
+            </div>
+
+            {preview.invalidRows > 0 ? (
+              <div className="rounded-xl border border-red-900/70 bg-red-950/30 p-3">
+                <p className="text-xs font-medium text-red-300 flex items-center gap-1.5"><AlertTriangle size={14} />Impor belum dapat dilanjutkan</p>
+                <p className="text-xs text-red-300/70 mt-1">Perbaiki semua baris berikut lalu unggah ulang file. Tidak ada data yang akan disimpan sebagian.</p>
+                <ul className="mt-2 space-y-1 max-h-32 overflow-y-auto text-xs text-zinc-400">
+                  {preview.errors.slice(0, 20).map(error => <li key={`${error.rowNumber}-${error.message}`}><span className="text-red-300">Baris {error.rowNumber}:</span> {error.message}</li>)}
+                  {preview.errors.length > 20 && <li className="text-zinc-500">dan {preview.errors.length - 20} error lainnya.</li>}
+                </ul>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-emerald-900/70 bg-emerald-950/20 p-3 text-xs text-emerald-300">Semua {preview.totalRows.toLocaleString('id-ID')} baris valid dan siap diimpor.</div>
+            )}
+          </div>
+        )}
+
+        <div className="flex gap-2 pt-5">
+          <button type="button" onClick={onClose} disabled={loading || importing} className="flex-1 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 text-zinc-300 rounded-lg py-2 text-sm">Batal</button>
+          <button type="button" onClick={handleImport} disabled={!preview || preview.invalidRows > 0 || loading || importing}
+            className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg py-2 text-sm font-medium flex items-center justify-center gap-2">
+            {importing && <Loader2 size={15} className="animate-spin" />}{importing ? 'Mengimpor...' : 'Import Pengeluaran'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const PLATFORM_OPTIONS = ['Shopee', 'Tokopedia', 'TikTok Shop', 'Lazada', 'Blibli', 'Lainnya']
 
 function ManageWalletsModal({ onClose, wallets }: { onClose: () => void; wallets: any[] }) {
@@ -475,6 +706,7 @@ function EditLedgerModal({ entry, onClose }: { entry: any; onClose: () => void }
 
 export function WalletTab() {
   const [showModal, setShowModal]             = useState(false)
+  const [showExpenseImport, setShowExpenseImport] = useState(false)
   const [showManageWallets, setShowManageWallets] = useState(false)
   const [walletFilter, setWalletFilter]       = useState('')
   const [typeFilter, setTypeFilter]           = useState('')
@@ -503,6 +735,7 @@ export function WalletTab() {
   return (
     <>
       {showModal && wallets && <AddTransactionModal onClose={() => setShowModal(false)} wallets={wallets} />}
+      {showExpenseImport && wallets && <ExpenseImportModal onClose={() => setShowExpenseImport(false)} wallets={wallets} />}
       {showManageWallets && wallets && <ManageWalletsModal onClose={() => setShowManageWallets(false)} wallets={wallets} />}
       {editEntry && <EditLedgerModal entry={editEntry} onClose={() => setEditEntry(null)} />}
 
@@ -510,6 +743,9 @@ export function WalletTab() {
       <div className="flex justify-end gap-2 mb-4">
         <button onClick={() => setShowManageWallets(true)} className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-blue-400 rounded-lg px-3 py-2 text-sm border border-zinc-700">
           <Settings size={14}/>Kelola Wallet
+        </button>
+        <button onClick={() => setShowExpenseImport(true)} className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-emerald-400 rounded-lg px-3 py-2 text-sm border border-zinc-700">
+          <Upload size={14}/>Import Pengeluaran
         </button>
         <button onClick={handleExport} className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg px-3 py-2 text-sm border border-zinc-700">
           <Download size={14}/>Export
