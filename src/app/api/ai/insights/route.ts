@@ -9,6 +9,7 @@ import {
   ymWIB,
   monthPacing,
 } from '@/lib/dashboard-helpers'
+import { getAiProviders } from '@/lib/ai-providers'
 
 // ── Helper: format rupiah ──
 function fmt(n: number): string {
@@ -345,25 +346,12 @@ export async function POST(request: NextRequest) {
   if (!session.isLoggedIn) return apiError('Unauthorized', 401)
   if (session.userRole !== 'OWNER') return apiError('Hanya Owner yang bisa generate AI Insights', 403)
 
-  // ── Provider: 1 Default + 1 Fallback ──
-  const apiKey = process.env.ANTIGRAVITY_KEY_1 || process.env.ANTIGRAVITY_KEY_2
-  if (!apiKey) return apiError('ANTIGRAVITY_KEY_1 / _2 belum di-set di environment', 500)
-
-  const DEFAULT = {
-    url: process.env.ANTIGRAVITY_URL_1,
-    key: process.env.ANTIGRAVITY_KEY_1,
-    model: process.env.ANTIGRAVITY_MODEL_1,
-    name: 'Default',
+  // Dibaca pada saat request agar environment runtime container tidak ikut
+  // terkunci ketika image Next.js dibangun.
+  const providers = getAiProviders(2)
+  if (providers.length === 0) {
+    return apiError('Konfigurasi AI belum tersedia pada container aktif. Simpan sebagai Runtime Environment lalu redeploy layanan.', 500)
   }
-  const FALLBACK = {
-    url: process.env.ANTIGRAVITY_URL_2,
-    key: process.env.ANTIGRAVITY_KEY_2,
-    model: process.env.ANTIGRAVITY_MODEL_2,
-    name: 'Fallback',
-  }
-  const providers = [DEFAULT, FALLBACK].filter(p => p.url && p.key) as { url: string; key: string; model: string; name: string }[]
-
-  if (providers.length === 0) return apiError('Tidak ada AI provider yang dikonfigurasi', 500)
 
   try {
     const periodType = (request.nextUrl.searchParams.get('type') || 'monthly') as 'monthly' | 'weekly'
@@ -376,11 +364,11 @@ export async function POST(request: NextRequest) {
 
     for (const provider of providers) {
       try {
-        const aiRes = await fetch(`${provider.url}/chat/completions`, {
+        const aiRes = await fetch(`${provider.baseUrl}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${provider.key}`,
+            'Authorization': `Bearer ${provider.apiKey}`,
           },
           body: JSON.stringify({
             model: provider.model,
@@ -392,8 +380,7 @@ export async function POST(request: NextRequest) {
         })
 
         if (!aiRes.ok) {
-          const errText = await aiRes.text()
-          errors.push(`${provider.name}: HTTP ${aiRes.status} — ${errText.slice(0, 200)}`)
+          errors.push(`${provider.name}: HTTP ${aiRes.status}`)
           continue
         }
 

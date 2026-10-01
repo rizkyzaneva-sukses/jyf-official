@@ -19,6 +19,7 @@ import { buildWeeklyReport } from '@/lib/weekly-report'
 import { buildMonthlyReport } from '@/lib/monthly-report'
 import { isQuickCommand, renderQuickCommand, type QuickCommandKey } from '@/lib/quick-commands'
 import { getMenuByKey, type InlineKeyboard } from '@/lib/telegram-menu'
+import { getAiProviders } from '@/lib/ai-providers'
 
 // Chat ID yang diizinkan (owner + group IDs, comma-separated)
 const OWNER_CHAT_ID = process.env.TELEGRAM_OWNER_CHAT_ID || '565228988'
@@ -490,9 +491,12 @@ export async function POST(req: NextRequest) {
 // ─────────────────────────────────────────────
 export async function GET() {
     const hasToken = !!(await getBotToken())
-    const hasSlot1 = !!(process.env.ANTIGRAVITY_KEY_1 && process.env.ANTIGRAVITY_URL_1)
-    const hasSlot2 = !!(process.env.ANTIGRAVITY_KEY_2 && process.env.ANTIGRAVITY_URL_2)
-    const hasSlot3 = !!(process.env.ANTIGRAVITY_KEY_3 && process.env.ANTIGRAVITY_URL_3)
+    const providers = getAiProviders(3)
+    const slot = (name: string) => providers.find(provider => provider.name === name)
+    const slotStatus = (name: string) => {
+        const provider = slot(name)
+        return provider ? `✅ ${provider.model} @ ${provider.baseUrl}` : '❌ missing'
+    }
     const ownerIds = OWNER_CHAT_ID.split(',').map((s: string) => s.trim()).filter(Boolean)
 
     return NextResponse.json({
@@ -500,9 +504,9 @@ export async function GET() {
         status: 'Webhook endpoint active',
         config: {
             botToken: hasToken ? '✅ configured' : '❌ missing',
-            slot1: hasSlot1 ? `✅ ${process.env.ANTIGRAVITY_MODEL_1} @ ${process.env.ANTIGRAVITY_URL_1}` : '❌ missing',
-            slot2: hasSlot2 ? `✅ ${process.env.ANTIGRAVITY_MODEL_2} @ ${process.env.ANTIGRAVITY_URL_2}` : '❌ missing',
-            slot3: hasSlot3 ? `✅ ${process.env.ANTIGRAVITY_MODEL_3} @ ${process.env.ANTIGRAVITY_URL_3}` : '❌ missing',
+            slot1: slotStatus('Slot1'),
+            slot2: slotStatus('Slot2'),
+            slot3: slotStatus('Slot3'),
             ownerChatIds: ownerIds.length > 0 ? `✅ ${ownerIds.length} ID(s)` : '❌ none',
         },
         timestamp: new Date().toISOString(),

@@ -1,13 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getSession } from '@/lib/session'
 import { todayWIBStr } from '@/lib/utils'
-
-const SLOT1_URL  = process.env.ANTIGRAVITY_URL_1 || ''
-const SLOT1_KEY  = process.env.ANTIGRAVITY_KEY_1 || ''
-const SLOT1_MODEL = process.env.ANTIGRAVITY_MODEL_1 || ''
-const SLOT2_URL  = process.env.ANTIGRAVITY_URL_2 || ''
-const SLOT2_KEY  = process.env.ANTIGRAVITY_KEY_2 || ''
-const SLOT2_MODEL = process.env.ANTIGRAVITY_MODEL_2 || ''
+import { getAiProviders } from '@/lib/ai-providers'
 
 function getSystemPrompt(): string {
   const today = todayWIBStr()
@@ -214,20 +208,20 @@ Read-only stock list untuk role EXTERNAL.
 }
 
 async function callAI(messages: { role: string; content: string }[]): Promise<string> {
-  const slots = [
-    { url: SLOT1_URL, key: SLOT1_KEY, model: SLOT1_MODEL },
-    { url: SLOT2_URL, key: SLOT2_KEY, model: SLOT2_MODEL },
-  ]
+  const slots = getAiProviders(2)
+
+  if (slots.length === 0) {
+    return 'Konfigurasi AI belum tersedia pada container aktif. Hubungi admin untuk menyimpan Runtime Environment lalu redeploy layanan.'
+  }
 
   for (const slot of slots) {
-    if (!slot.url || !slot.key || !slot.model) continue
     try {
       const controller = new AbortController()
       const timeout = setTimeout(() => controller.abort(), 30_000)
 
-      const res = await fetch(`${slot.url}/chat/completions`, {
+      const res = await fetch(`${slot.baseUrl}/chat/completions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${slot.key}` },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${slot.apiKey}` },
         body: JSON.stringify({
           model: slot.model,
           messages: [{ role: 'system', content: getSystemPrompt() }, ...messages],

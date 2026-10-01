@@ -21,22 +21,11 @@ import {
     getPeriodComparison,
 } from '@/lib/bot-tools'
 import { todayWIBStr } from '@/lib/utils'
+import { getAiProviders, type AiProvider } from '@/lib/ai-providers'
 
 // ─────────────────────────────────────────────
 // Config — 3 Slot Provider (auto-failover)
 // ─────────────────────────────────────────────
-const SLOT1_BASE_URL = process.env.ANTIGRAVITY_URL_1 || ''
-const SLOT1_API_KEY  = process.env.ANTIGRAVITY_KEY_1 || ''
-const SLOT1_MODEL    = process.env.ANTIGRAVITY_MODEL_1 || ''
-
-const SLOT2_BASE_URL = process.env.ANTIGRAVITY_URL_2 || ''
-const SLOT2_API_KEY  = process.env.ANTIGRAVITY_KEY_2 || ''
-const SLOT2_MODEL    = process.env.ANTIGRAVITY_MODEL_2 || ''
-
-const SLOT3_BASE_URL = process.env.ANTIGRAVITY_URL_3 || ''
-const SLOT3_API_KEY  = process.env.ANTIGRAVITY_KEY_3 || ''
-const SLOT3_MODEL    = process.env.ANTIGRAVITY_MODEL_3 || ''
-
 // Timeout untuk API call (30 detik)
 const API_TIMEOUT_MS = 30_000
 // ─────────────────────────────────────────────
@@ -467,12 +456,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: nu
     }
 }
 
-type ProviderConfig = {
-    name: string
-    baseUrl: string
-    apiKey: string
-    model: string
-}
+type ProviderConfig = AiProvider
 
 async function callProvider(
     provider: ProviderConfig,
@@ -513,36 +497,7 @@ async function callProvider(
 }
 
 function buildProviders(): ProviderConfig[] {
-    const providers: ProviderConfig[] = []
-
-    if (SLOT1_API_KEY && SLOT1_BASE_URL) {
-        providers.push({
-            name: 'Slot1',
-            baseUrl: SLOT1_BASE_URL,
-            apiKey: SLOT1_API_KEY,
-            model: SLOT1_MODEL,
-        })
-    }
-
-    if (SLOT2_API_KEY && SLOT2_BASE_URL) {
-        providers.push({
-            name: 'Slot2',
-            baseUrl: SLOT2_BASE_URL,
-            apiKey: SLOT2_API_KEY,
-            model: SLOT2_MODEL,
-        })
-    }
-
-    if (SLOT3_API_KEY && SLOT3_BASE_URL) {
-        providers.push({
-            name: 'Slot3',
-            baseUrl: SLOT3_BASE_URL,
-            apiKey: SLOT3_API_KEY,
-            model: SLOT3_MODEL,
-        })
-    }
-
-    return providers
+    return getAiProviders(3)
 }
 
 // ─────────────────────────────────────────────
