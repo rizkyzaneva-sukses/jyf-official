@@ -252,7 +252,7 @@ export async function GET(request: NextRequest) {
             AND status NOT ILIKE '%dikembalikan%'
           GROUP BY COALESCE(NULLIF(sku, ''), NULLIF(product_name, ''), 'Produk tanpa SKU')
           ORDER BY total_gmv DESC, total_qty DESC
-          LIMIT 5
+          LIMIT 10
         `
       : prisma.$queryRaw<{ product_key: string; product_name: string; sku: string; total_qty: bigint; total_gmv: bigint; order_count: bigint }[]>`
           SELECT
@@ -271,7 +271,7 @@ export async function GET(request: NextRequest) {
             AND status NOT ILIKE '%dikembalikan%'
           GROUP BY COALESCE(NULLIF(sku, ''), NULLIF(product_name, ''), 'Produk tanpa SKU')
           ORDER BY total_gmv DESC, total_qty DESC
-          LIMIT 5
+          LIMIT 10
         `,
 
     // Ad Spend per Platform — dari wallet yang ditandai isAdsBudget=true
