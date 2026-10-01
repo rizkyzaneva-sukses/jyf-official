@@ -137,6 +137,18 @@ function resolveCombinedSku(
   return mapped.split('+').map(s => s.trim()).filter(Boolean)
 }
 
+/** Nama produk selalu mengutamakan master produk berdasarkan SKU internal. */
+function resolveProductName(
+  sku: string,
+  marketplaceProductName: unknown,
+  productNameMap: Map<string, string>,
+): string | null {
+  return productNameMap.get(sku.toLowerCase().trim())
+    || String(marketplaceProductName ?? '').trim()
+    || sku
+    || null
+}
+
 // ── SHOPEE PARSER ──────────────────────────────────────
 
 /**
@@ -154,7 +166,8 @@ export function parseShopeeOrders(
   rawRows: Record<string, unknown>[],
   hppMap: Map<string, number>,
   skuMappingMap: Map<string, string>,  // fromSku.toLowerCase() → toSku
-  shopeeAdminFee = 14
+  shopeeAdminFee = 14,
+  productNameMap = new Map<string, string>(), // SKU lower-case → nama dari Master Produk
 ): ParseResult {
   // Group by No. Pesanan untuk handle multi-item invoice
   const groups = new Map<string, { row: Record<string, unknown>; rowNumber: number }[]>()
@@ -249,7 +262,7 @@ export function parseShopeeOrders(
         airwaybill: String(item.sourceRow['No. Resi'] || '').trim() || null,
         orderCreatedAt: String(item.sourceRow['Waktu Dana Dilepaskan'] || item.sourceRow['Waktu Pesanan Dibuat'] || '').trim() || null,
         sku: item.sku || null,
-        productName: item.sku || String(item.sourceRow['Nama Produk'] || '').trim() || null,
+        productName: resolveProductName(item.sku, item.sourceRow['Nama Produk'], productNameMap),
         qty: item.qty,
         totalProductPrice: Math.round(item.hargaPerUnit * item.qty),
         realOmzet,
@@ -282,7 +295,8 @@ export function parseTikTokOrders(
   rawRows: Record<string, unknown>[],
   hppMap: Map<string, number>,
   skuMappingMap: Map<string, string>,
-  tiktokAdminFee = 14.1
+  tiktokAdminFee = 14.1,
+  productNameMap = new Map<string, string>(), // SKU lower-case → nama dari Master Produk
 ): ParseResult {
   const orders: ParsedOrder[] = []
   const failed: FailedRow[] = []
@@ -326,7 +340,7 @@ export function parseTikTokOrders(
           airwaybill: String(row['Tracking ID'] || '').trim() || null,
           orderCreatedAt: String(row['Order settled time'] || row['Created Time'] || '').trim() || null,
           sku: sku || null,
-          productName: sku || String(row['Product Name'] || '').trim() || null,
+          productName: resolveProductName(sku, row['Product Name'], productNameMap),
           qty,
           totalProductPrice: splitSubtotal,
           realOmzet,
@@ -351,7 +365,7 @@ export function parseTikTokOrders(
         airwaybill: String(row['Tracking ID'] || '').trim() || null,
         orderCreatedAt: String(row['Order settled time'] || row['Created Time'] || '').trim() || null,
         sku: rawSku || null,
-        productName: String(row['Product Name'] || '').trim() || null,
+        productName: resolveProductName(rawSku, row['Product Name'], productNameMap),
         qty,
         totalProductPrice: effectiveSubtotal,
         realOmzet,
@@ -383,7 +397,8 @@ export function parseLazadaOrders(
   rawRows: Record<string, unknown>[],
   hppMap: Map<string, number>,
   skuMappingMap: Map<string, string>,
-  lazadaAdminFee = 0
+  lazadaAdminFee = 0,
+  productNameMap = new Map<string, string>(), // SKU lower-case → nama dari Master Produk
 ): ParseResult {
   const orders: ParsedOrder[] = []
   const failed: FailedRow[] = []
@@ -403,7 +418,6 @@ export function parseLazadaOrders(
     const sellerDiscount = parseLazadaNum(row.sellerDiscountTotal)
     const platformDiscount = parseLazadaNum(row.platformDiscountTotal)
     const discountedUnitPrice = Math.max(0, unitPrice + sellerDiscount + platformDiscount)
-    const productName = String(row.itemName ?? '').trim() || rawSku || null
     const orderCreatedAt = String(row.createTime || row.updateTime || '').trim() || null
 
     const addOrder = (sku: string, pricePerUnit: number) => {
@@ -418,7 +432,7 @@ export function parseLazadaOrders(
         airwaybill: String(row.trackingCode ?? row.cdTrackingCode ?? '').trim() || null,
         orderCreatedAt,
         sku: sku || null,
-        productName,
+        productName: resolveProductName(sku, row.itemName, productNameMap),
         qty,
         totalProductPrice,
         realOmzet,

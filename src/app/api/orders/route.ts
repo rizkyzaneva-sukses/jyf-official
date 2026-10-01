@@ -197,15 +197,16 @@ export async function POST(request: NextRequest) {
     return apiError('Format file tidak dikenali. Pastikan upload file ekspor dari TikTok, Shopee, atau Lazada.')
   }
 
-  // HPP map + SKU mapping, fetch parallel
+  // HPP + nama produk dari master + SKU mapping, fetch parallel
   const [products, skuMappings, shopeeFeeSetting, tiktokFeeSetting] = await Promise.all([
-    prisma.masterProduct.findMany({ select: { sku: true, hpp: true } }),
+    prisma.masterProduct.findMany({ select: { sku: true, hpp: true, productName: true } }),
     prisma.skuMapping.findMany({ where: { isActive: true }, select: { fromSku: true, toSku: true } }),
     prisma.appSetting.findUnique({ where: { key: 'biaya_admin_shopee' } }),
     prisma.appSetting.findUnique({ where: { key: 'biaya_admin_tiktok' } }),
   ])
 
   const hppMap = new Map(products.map(p => [p.sku.toLowerCase(), p.hpp]))
+  const productNameMap = new Map(products.map(p => [p.sku.toLowerCase(), p.productName]))
   const skuMappingMap = new Map(skuMappings.map(m => [m.fromSku.toLowerCase(), m.toSku]))
 
   const shopeeAdminFee = parseFloat(shopeeFeeSetting?.value ?? '14')
@@ -213,10 +214,10 @@ export async function POST(request: NextRequest) {
 
   // Parse — sekarang return { orders, failed }
   const { orders: parsed, failed } = platform === 'Shopee'
-    ? parseShopeeOrders(normalizedRows, hppMap, skuMappingMap, shopeeAdminFee)
+    ? parseShopeeOrders(normalizedRows, hppMap, skuMappingMap, shopeeAdminFee, productNameMap)
     : platform === 'TikTok'
-      ? parseTikTokOrders(normalizedRows, hppMap, skuMappingMap, tiktokAdminFee)
-      : parseLazadaOrders(normalizedRows, hppMap, skuMappingMap)
+      ? parseTikTokOrders(normalizedRows, hppMap, skuMappingMap, tiktokAdminFee, productNameMap)
+      : parseLazadaOrders(normalizedRows, hppMap, skuMappingMap, 0, productNameMap)
 
   if (parsed.length === 0 && failed.length === 0) {
     return apiError('Tidak ada data valid — semua order mungkin berstatus batal.')

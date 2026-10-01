@@ -111,6 +111,19 @@ describe('parseShopeeOrders', () => {
     expect(result.failed).toHaveLength(0)
   })
 
+  it('uses the master product name matched by SKU', () => {
+    const productNameMap = new Map<string, string>([['j-sdl23bk/42', 'RONIN - BLACK 42']])
+    const result = parseShopeeOrders(
+      [makeShopeeRow({ 'Nomor Referensi SKU': 'J-SDL23BK/42', 'Nama Produk': 'Nama Marketplace' })],
+      emptyHppMap,
+      emptySkuMapping,
+      14,
+      productNameMap,
+    )
+
+    expect(result.orders[0].productName).toBe('RONIN - BLACK 42')
+  })
+
   it('sets platform to Shopee', () => {
     const rows = [makeShopeeRow()]
     const result = parseShopeeOrders(rows, emptyHppMap, emptySkuMapping)
@@ -437,6 +450,12 @@ describe('parseTikTokOrders', () => {
     expect(result.orders[1].sku).toBe('SKU-Y')
   })
 
+  it('uses master product names for TikTok SKUs', () => {
+    const productNameMap = new Map<string, string>([['sku-a', 'Nama Produk Master']])
+    const result = parseTikTokOrders([makeTikTokRow()], emptyHppMap, emptySkuMapping, 14.1, productNameMap)
+    expect(result.orders[0].productName).toBe('Nama Produk Master')
+  })
+
   it('marks combined SKU as failed when not in mapping', () => {
     const rows = [makeTikTokRow({ 'Seller SKU': 'SKU-A + SKU-B' })]
     const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
@@ -568,5 +587,11 @@ describe('parseLazadaOrders', () => {
       buyerUsername: 'buyer1',
       receiverName: 'Buyer One',
     })
+  })
+
+  it('uses the master product name for Lazada SKUs', () => {
+    const productNameMap = new Map<string, string>([['sku-a', 'Nama Produk Master']])
+    const result = parseLazadaOrders([makeLazadaRow()], emptyHppMap, emptySkuMapping, 0, productNameMap)
+    expect(result.orders[0].productName).toBe('Nama Produk Master')
   })
 })
