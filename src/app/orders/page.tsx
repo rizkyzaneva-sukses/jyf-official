@@ -209,7 +209,7 @@ export default function OrdersPage() {
   const total = data?.total ?? 0
   const totalPages = Math.ceil(total / limit)
 
-  // ── Upload handler — auto detect TikTok/Shopee ──────
+  // ── Upload handler — auto detect TikTok/Shopee/Lazada ──────
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -497,7 +497,7 @@ export default function OrdersPage() {
       {!importing && !importResult && canEdit && (
         <div className="mb-4 bg-zinc-900/50 border border-zinc-800 border-dashed rounded-xl px-4 py-3 flex items-center gap-2 text-xs text-zinc-600">
           <AlertCircle size={13} />
-          Upload file ekspor langsung dari TikTok (.csv) atau Shopee (.xlsx) — tanpa perlu edit manual.
+          Upload file ekspor langsung dari TikTok, Shopee, atau Lazada (.xlsx/.csv) — tanpa perlu edit manual.
         </div>
       )}
 
@@ -556,6 +556,7 @@ export default function OrdersPage() {
           <option value="">Semua Platform</option>
           <option value="TikTok">TikTok</option>
           <option value="Shopee">Shopee</option>
+          <option value="Lazada">Lazada</option>
           <option value="Tokopedia">Tokopedia</option>
         </select>
       </div>

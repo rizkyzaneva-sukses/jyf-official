@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 import { apiSuccess, apiError, getPagination, wibDateRange } from '@/lib/utils'
-import { parseShopeeOrders, parseTikTokOrders, detectPlatform } from '@/lib/order-parsers'
+import { parseLazadaOrders, parseShopeeOrders, parseTikTokOrders, detectPlatform } from '@/lib/order-parsers'
 import { parseOrderDate } from '@/lib/order-date'
 
 // GET /api/orders
@@ -170,7 +170,7 @@ export async function GET(request: NextRequest) {
   return apiSuccess({ orders: ordersWithPayout, total })
 }
 
-// POST /api/orders — import file mentah TikTok/Shopee langsung
+// POST /api/orders — import file mentah TikTok/Shopee/Lazada langsung
 export async function POST(request: NextRequest) {
   const session = await getSession()
   if (!session.isLoggedIn) return apiError('Unauthorized', 401)
@@ -181,10 +181,20 @@ export async function POST(request: NextRequest) {
 
   if (!Array.isArray(rawRows) || rawRows.length === 0) return apiError('Data kosong')
 
+  // Export marketplace kadang memiliki BOM atau spasi tersembunyi di nama kolom.
+  // Normalisasi di server supaya parser tetap konsisten untuk XLSX maupun CSV.
+  const normalizeHeader = (value: unknown) => String(value ?? '').replace(/^\uFEFF/, '').trim()
+  const normalizedRows = rawRows.map((row: Record<string, unknown>) =>
+    Object.fromEntries(Object.entries(row).map(([key, value]) => [normalizeHeader(key), value]))
+  )
+  const normalizedHeaders = Array.isArray(headers) && headers.length > 0
+    ? headers.map(normalizeHeader)
+    : Object.keys(normalizedRows[0] ?? {})
+
   // Auto-detect platform dari header kolom
-  const platform = detectPlatform(headers ?? Object.keys(rawRows[0] ?? {}))
+  const platform = detectPlatform(normalizedHeaders)
   if (!platform) {
-    return apiError('Format file tidak dikenali. Pastikan upload file ekspor dari TikTok atau Shopee.')
+    return apiError('Format file tidak dikenali. Pastikan upload file ekspor dari TikTok, Shopee, atau Lazada.')
   }
 
   // HPP map + SKU mapping, fetch parallel
@@ -203,8 +213,10 @@ export async function POST(request: NextRequest) {
 
   // Parse — sekarang return { orders, failed }
   const { orders: parsed, failed } = platform === 'Shopee'
-    ? parseShopeeOrders(rawRows, hppMap, skuMappingMap, shopeeAdminFee)
-    : parseTikTokOrders(rawRows, hppMap, skuMappingMap, tiktokAdminFee)
+    ? parseShopeeOrders(normalizedRows, hppMap, skuMappingMap, shopeeAdminFee)
+    : platform === 'TikTok'
+      ? parseTikTokOrders(normalizedRows, hppMap, skuMappingMap, tiktokAdminFee)
+      : parseLazadaOrders(normalizedRows, hppMap, skuMappingMap)
 
   if (parsed.length === 0 && failed.length === 0) {
     return apiError('Tidak ada data valid — semua order mungkin berstatus batal.')

@@ -1,8 +1,10 @@
 /**
  * order-parsers.ts
- * Mengolah file mentah TikTok / Shopee langsung ke format DB
+ * Mengolah file mentah TikTok / Shopee / Lazada langsung ke format DB
  * Tanpa perlu edit manual sebelum upload
  */
+
+export type OrderPlatform = 'TikTok' | 'Shopee' | 'Lazada'
 
 export interface ParsedOrder {
   orderNo: string
@@ -52,6 +54,19 @@ function parseTikTokNum(val: unknown): number {
   return isNaN(n) ? 0 : Math.round(n)
 }
 
+/** Parse angka export Lazada (contoh: 282000.00 atau -3880.00). */
+function parseLazadaNum(val: unknown): number {
+  if (val === null || val === undefined || val === '') return 0
+  const n = Number(String(val).replace(/,/g, '').trim())
+  return Number.isFinite(n) ? Math.round(n) : 0
+}
+
+/** Quantity yang aman untuk disimpan ke database. */
+function parseQty(val: unknown): number {
+  const n = Number.parseInt(String(val ?? ''), 10)
+  return Number.isFinite(n) && n > 0 ? n : 1
+}
+
 /** Status batal Shopee */
 const SHOPEE_CANCEL_STATUSES = [
   'dibatalkan', 'batal', 'cancelled', 'canceled',
@@ -67,6 +82,24 @@ const TIKTOK_CANCEL_STATUSES = ['cancelled', 'canceled', 'dibatalkan', 'batal']
 
 function isTikTokCancel(status: string): boolean {
   return TIKTOK_CANCEL_STATUSES.some(s => status.toLowerCase().includes(s))
+}
+
+/** Status Lazada yang bukan penjualan valid. */
+function isLazadaCancel(status: string): boolean {
+  const normalized = status.toLowerCase()
+  return ['canceled', 'cancelled', 'package returned', 'returned', 'return'].some(s => normalized.includes(s))
+}
+
+/** TikTok menaruh satu baris deskripsi kolom tepat setelah header. */
+function isTikTokInstructionRow(row: Record<string, unknown>): boolean {
+  const orderNo = String(row['Order ID'] ?? '').trim().toLowerCase()
+  const status = String(row['Order Status'] ?? '').trim().toLowerCase()
+  const sku = String(row['Seller SKU'] ?? '').trim().toLowerCase()
+  return (
+    orderNo === 'platform unique order id.' ||
+    status === 'current order status.' ||
+    sku === 'seller sku input by the seller in the product system.'
+  )
 }
 
 /**
@@ -163,7 +196,7 @@ export function parseShopeeOrders(
     for (const { row, rowNumber } of entries) {
       const rawSku = String(row['Nomor Referensi SKU'] || '').trim()
       const hargaAfterDisc = parseShopeeNum(row['Harga Setelah Diskon'])
-      const qty = Math.max(1, parseInt(String(row['Jumlah'] || '1'), 10))
+      const qty = parseQty(row['Jumlah'])
 
       if (rawSku.includes('+')) {
         const resolved = resolveCombinedSku(rawSku, skuMappingMap)
@@ -257,6 +290,7 @@ export function parseTikTokOrders(
   for (let i = 0; i < rawRows.length; i++) {
     const row = rawRows[i]
     const rowNumber = i + 1
+    if (isTikTokInstructionRow(row)) continue
     const orderNo = String(row['Order ID'] || '').trim()
     if (!orderNo) continue
 
@@ -264,7 +298,7 @@ export function parseTikTokOrders(
     if (isTikTokCancel(status)) continue
 
     const subtotalAfterDisc = parseTikTokNum(row['SKU Subtotal After Discount'])
-    const qty = Math.max(1, parseInt(String(row['Quantity'] || '1'), 10))
+    const qty = parseQty(row['Quantity'])
     const rawSku = String(row['Seller SKU'] || '').trim()
 
     if (rawSku.includes('+')) {
@@ -334,11 +368,102 @@ export function parseTikTokOrders(
   return { orders, failed }
 }
 
+// ── LAZADA PARSER ──────────────────────────────────────
+
+/**
+ * Parse export order Lazada Seller Center.
+ *
+ * Lazada tidak menyediakan kolom quantity pada export ini, sehingga setiap
+ * orderItemId dianggap satu unit. Nilai penjualan memakai unitPrice setelah
+ * seller/platform discount dan tidak memasukkan shipping/customer charge ke
+ * omzet produk. Fee Lazada belum memiliki setting di aplikasi, sehingga
+ * realOmzet sama dengan omzet produk sampai fee tersebut dikonfigurasi.
+ */
+export function parseLazadaOrders(
+  rawRows: Record<string, unknown>[],
+  hppMap: Map<string, number>,
+  skuMappingMap: Map<string, string>,
+  lazadaAdminFee = 0
+): ParseResult {
+  const orders: ParsedOrder[] = []
+  const failed: FailedRow[] = []
+
+  for (let i = 0; i < rawRows.length; i++) {
+    const row = rawRows[i]
+    const rowNumber = i + 1
+    const orderNo = String(row.orderNumber ?? '').trim()
+    if (!orderNo) continue
+
+    const status = String(row.status ?? '').trim()
+    if (isLazadaCancel(status)) continue
+
+    const rawSku = String(row.sellerSku || row.lazadaSku || '').trim()
+    const qty = parseQty(row.quantity ?? row.itemQuantity ?? row.qty)
+    const unitPrice = parseLazadaNum(row.unitPrice)
+    const sellerDiscount = parseLazadaNum(row.sellerDiscountTotal)
+    const platformDiscount = parseLazadaNum(row.platformDiscountTotal)
+    const discountedUnitPrice = Math.max(0, unitPrice + sellerDiscount + platformDiscount)
+    const productName = String(row.itemName ?? '').trim() || rawSku || null
+    const orderCreatedAt = String(row.createTime || row.updateTime || '').trim() || null
+
+    const addOrder = (sku: string, pricePerUnit: number) => {
+      const totalProductPrice = Math.round(pricePerUnit * qty)
+      const realOmzet = Math.round(totalProductPrice * (1 - lazadaAdminFee / 100))
+      const skuKey = sku.toLowerCase()
+
+      orders.push({
+        orderNo,
+        status,
+        platform: 'Lazada',
+        airwaybill: String(row.trackingCode ?? row.cdTrackingCode ?? '').trim() || null,
+        orderCreatedAt,
+        sku: sku || null,
+        productName,
+        qty,
+        totalProductPrice,
+        realOmzet,
+        city: String(row.shippingCity ?? '').trim() || null,
+        province: String(row.shippingRegion ?? '').trim() || null,
+        buyerUsername: String(row.customerName ?? '').trim() || null,
+        receiverName: String(row.shippingName ?? '').trim() || null,
+        phone: String(row.shippingPhone ?? '').trim() || null,
+        hpp: hppMap.get(skuKey) ?? 0,
+      })
+    }
+
+    if (rawSku.includes('+')) {
+      const resolved = resolveCombinedSku(rawSku, skuMappingMap)
+      if (!resolved) {
+        failed.push({
+          rowNumber,
+          orderNo,
+          sku: rawSku,
+          reason: 'SKU gabungan tidak ditemukan di DATABASE PRODUK GABUNGAN',
+        })
+        continue
+      }
+
+      const nonKaosCount = resolved.filter(s => !isKaosSku(s)).length || resolved.length
+      for (const sku of resolved) {
+        addOrder(sku, isKaosSku(sku) ? 0 : Math.round(discountedUnitPrice / nonKaosCount))
+      }
+      continue
+    }
+
+    addOrder(rawSku, isKaosSku(rawSku) ? 0 : discountedUnitPrice)
+  }
+
+  return { orders, failed }
+}
+
 // ── AUTO DETECT PLATFORM ───────────────────────────────
 
 /** Deteksi platform dari header kolom */
-export function detectPlatform(headers: string[]): 'TikTok' | 'Shopee' | null {
-  const headerSet = new Set(headers.map(h => h?.toLowerCase?.() ?? ''))
+export function detectPlatform(headers: string[]): OrderPlatform | null {
+  const headerSet = new Set(headers.map(h => String(h ?? '').replace(/^\uFEFF/, '').trim().toLowerCase()))
+  if (headerSet.has('ordernumber') || headerSet.has('lazadaid')) {
+    return 'Lazada'
+  }
   if (headerSet.has('order id') || headerSet.has('seller sku') || headerSet.has('tracking id') || headerSet.has('order settled time')) {
     return 'TikTok'
   }

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  parseLazadaOrders,
   parseShopeeOrders,
   parseTikTokOrders,
   detectPlatform,
@@ -66,6 +67,14 @@ describe('detectPlatform', () => {
     // TikTok check comes first in the code
     const headers = ['Order ID', 'No. Pesanan']
     expect(detectPlatform(headers)).toBe('TikTok')
+  })
+
+  it('detects Lazada from orderNumber header', () => {
+    expect(detectPlatform(['orderNumber', 'sellerSku', 'paidPrice'])).toBe('Lazada')
+  })
+
+  it('trims BOM and whitespace from headers', () => {
+    expect(detectPlatform(['\uFEFF orderNumber ', 'sellerSku'])).toBe('Lazada')
   })
 })
 
@@ -324,6 +333,19 @@ describe('parseTikTokOrders', () => {
     expect(result.failed).toHaveLength(0)
   })
 
+  it('skips TikTok export instruction row and keeps quantity numeric', () => {
+    const instructionRow = {
+      'Order ID': 'Platform unique order ID.',
+      'Order Status': 'Current order status.',
+      'Seller SKU': 'Seller sku input by the seller in the product system.',
+      'Quantity': 'SKU sold quantity in the order.',
+    }
+    const result = parseTikTokOrders([instructionRow, makeTikTokRow()], emptyHppMap, emptySkuMapping)
+    expect(result.orders).toHaveLength(1)
+    expect(result.orders[0].orderNo).toBe('TT-001')
+    expect(Number.isNaN(result.orders[0].qty)).toBe(false)
+  })
+
   it('sets platform to TikTok', () => {
     const rows = [makeTikTokRow()]
     const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
@@ -486,5 +508,65 @@ describe('parseTikTokOrders', () => {
     const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
     expect(result.orders[0].city).toBe('Surabaya')
     expect(result.orders[0].province).toBe('Jawa Timur')
+  })
+})
+
+// ── parseLazadaOrders ──────────────────────────────────
+
+describe('parseLazadaOrders', () => {
+  const emptyHppMap = new Map<string, number>()
+  const emptySkuMapping = new Map<string, string>()
+
+  function makeLazadaRow(overrides: Record<string, unknown> = {}) {
+    return {
+      orderNumber: 'LZ-001',
+      status: 'delivered',
+      sellerSku: 'SKU-A',
+      lazadaSku: 'LZ-SKU-A',
+      unitPrice: '274000.00',
+      sellerDiscountTotal: '-3880.00',
+      platformDiscountTotal: '-21920.00',
+      createTime: '31 Aug 2026 09:24',
+      trackingCode: 'LZTRACK001',
+      itemName: 'Product A',
+      shippingName: 'Buyer One',
+      shippingPhone: '0812345678',
+      shippingCity: 'Jakarta',
+      shippingRegion: 'DKI Jakarta',
+      customerName: 'buyer1',
+      ...overrides,
+    }
+  }
+
+  it('parses Lazada product price without shipping charges', () => {
+    const result = parseLazadaOrders([makeLazadaRow()], emptyHppMap, emptySkuMapping)
+    expect(result.orders).toHaveLength(1)
+    expect(result.orders[0].platform).toBe('Lazada')
+    expect(result.orders[0].totalProductPrice).toBe(248200)
+    expect(result.orders[0].realOmzet).toBe(248200)
+  })
+
+  it('skips canceled and returned Lazada orders', () => {
+    const result = parseLazadaOrders([
+      makeLazadaRow({ status: 'canceled' }),
+      makeLazadaRow({ orderNumber: 'LZ-002', status: 'Package Returned' }),
+    ], emptyHppMap, emptySkuMapping)
+    expect(result.orders).toHaveLength(0)
+  })
+
+  it('maps Lazada fields and parses date-compatible order data', () => {
+    const hppMap = new Map<string, number>([['sku-a', 50000]])
+    const result = parseLazadaOrders([makeLazadaRow()], hppMap, emptySkuMapping)
+    expect(result.orders[0]).toMatchObject({
+      orderNo: 'LZ-001',
+      sku: 'SKU-A',
+      hpp: 50000,
+      airwaybill: 'LZTRACK001',
+      orderCreatedAt: '31 Aug 2026 09:24',
+      city: 'Jakarta',
+      province: 'DKI Jakarta',
+      buyerUsername: 'buyer1',
+      receiverName: 'Buyer One',
+    })
   })
 })

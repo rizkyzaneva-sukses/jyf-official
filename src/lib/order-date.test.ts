@@ -20,6 +20,12 @@ describe('parseOrderDate', () => {
     expect(d!.toISOString()).toBe(new Date('2026-04-09T00:17:22+07:00').toISOString())
   })
 
+  it('parses Lazada English month format as WIB', () => {
+    const d = parseOrderDate('31 Aug 2026 09:24')
+    expect(d).not.toBeNull()
+    expect(d!.toISOString()).toBe(new Date('2026-08-31T09:24:00+07:00').toISOString())
+  })
+
   it('returns null for empty', () => {
     expect(parseOrderDate(null)).toBeNull()
     expect(parseOrderDate('')).toBeNull()
