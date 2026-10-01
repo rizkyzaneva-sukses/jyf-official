@@ -38,14 +38,41 @@ const TRX_TYPES = [
 
 function Tooltip({ text }: { text: string }) {
   const [show, setShow] = useState(false)
+  const [position, setPosition] = useState({ left: 0, top: 0, below: false })
+  const triggerRef = useRef<HTMLButtonElement>(null)
+
+  const openTooltip = () => {
+    const rect = triggerRef.current?.getBoundingClientRect()
+    if (!rect) return
+
+    const width = 256
+    const screenMargin = 12
+    const left = Math.min(
+      window.innerWidth - screenMargin - width / 2,
+      Math.max(screenMargin + width / 2, rect.left + rect.width / 2),
+    )
+    setPosition({ left, top: rect.top - 8, below: rect.top < 120 })
+    setShow(true)
+  }
+
   return (
-    <span className="relative inline-flex items-center ml-1">
-      <HelpCircle size={12} className="text-zinc-600 hover:text-zinc-400 cursor-help shrink-0"
-        onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)} />
+    <span className="inline-flex items-center ml-1">
+      <button ref={triggerRef} type="button" aria-label={`Info: ${text}`} aria-describedby={show ? 'wallet-tooltip' : undefined}
+        className="text-zinc-600 hover:text-zinc-400 focus:text-zinc-300 focus:outline-none shrink-0"
+        onMouseEnter={openTooltip} onMouseLeave={() => setShow(false)}
+        onFocus={openTooltip} onBlur={() => setShow(false)}
+        onClick={() => show ? setShow(false) : openTooltip()}>
+        <HelpCircle size={12} />
+      </button>
       {show && (
-        <div className="absolute z-[200] bottom-full mb-2 left-1/2 -translate-x-1/2 bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs rounded-lg px-3 py-2 shadow-xl pointer-events-none w-64 max-w-[min(16rem,80vw)] whitespace-normal leading-relaxed">
+        <div id="wallet-tooltip" role="tooltip"
+          className="fixed z-[200] bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs rounded-lg px-3 py-2 shadow-xl pointer-events-none w-64 max-w-[calc(100vw-1.5rem)] whitespace-normal leading-relaxed"
+          style={{
+            left: position.left,
+            top: position.below ? position.top + 28 : position.top,
+            transform: position.below ? 'translateX(-50%)' : 'translate(-50%, -100%)',
+          }}>
           {text}
-          <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-700" />
         </div>
       )}
     </span>
