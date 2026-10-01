@@ -9,7 +9,7 @@ import {
   TrendingUp, ShoppingCart, AlertTriangle,
   Wallet, Clock, ArrowUpRight, RefreshCw, Calendar, DollarSign,
   ArrowDownRight, Banknote, FileWarning, Target,
-  Maximize2, Minimize2,
+  Maximize2, Minimize2, Trophy,
 } from 'lucide-react'
 
 // ── Section components ──────────────────────────────────
@@ -23,6 +23,7 @@ import { ArApSection } from './_components/ar-ap-section'
 import { InventoryHealthSection } from './_components/inventory-health-section'
 import { OperationsSection } from './_components/operations-section'
 import { SectionHeader } from './_components/section-header'
+import { TopProducts } from './_components/top-products'
 
 // ── Date helpers ───────────────────────────────────────
 function getDefaultRange() {
@@ -431,7 +432,24 @@ export default function DashboardPage() {
       </SectionHeader>
 
       {/* ═══════════════════════════════════════════════════
-          SECTION 5: PROFITABILITY (owner/finance only)
+          SECTION 5: TOP PRODUCTS (all roles)
+          ═══════════════════════════════════════════════════ */}
+      <SectionHeader
+        icon={Trophy}
+        title="Produk Terlaris"
+        description="Penyumbang GMV tertinggi dari order masuk · bukan payout"
+        rangeLabel={rangeLabel}
+        collapsible
+        storageKey="dash.section.top-products"
+      >
+        <TopProducts
+          products={data?.topProducts ?? []}
+          isLoading={isLoading}
+        />
+      </SectionHeader>
+
+      {/* ═══════════════════════════════════════════════════
+          SECTION 6: PROFITABILITY (owner/finance only)
           ═══════════════════════════════════════════════════ */}
       {isOwnerOrFinance && (
         <ProfitabilitySection
@@ -444,7 +462,7 @@ export default function DashboardPage() {
       )}
 
       {/* ═══════════════════════════════════════════════════
-          SECTION 6: CASHFLOW (owner/finance only)
+          SECTION 7: CASHFLOW (owner/finance only)
           ═══════════════════════════════════════════════════ */}
       {isOwnerOrFinance && (
         <CashflowSection
@@ -461,19 +479,19 @@ export default function DashboardPage() {
       )}
 
       {/* ═══════════════════════════════════════════════════
-          SECTION 7: AR/AP (owner/finance only)
+          SECTION 8: AR/AP (owner/finance only)
           ═══════════════════════════════════════════════════ */}
       {isOwnerOrFinance && (
         <ArApSection enabled={!isCompact} />
       )}
 
       {/* ═══════════════════════════════════════════════════
-          SECTION 8: INVENTORY HEALTH
+          SECTION 9: INVENTORY HEALTH
           ═══════════════════════════════════════════════════ */}
       <InventoryHealthSection enabled={!isCompact} />
 
       {/* ═══════════════════════════════════════════════════
-          SECTION 9: OPERATIONS & GEOGRAPHY
+          SECTION 10: OPERATIONS & GEOGRAPHY
           ═══════════════════════════════════════════════════ */}
       <OperationsSection
         data={data ? { aging: data.aging, geo: data.geo, payout: data.payout } : null}

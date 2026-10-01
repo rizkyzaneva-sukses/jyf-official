@@ -55,6 +55,7 @@ export async function GET(request: NextRequest) {
     topProvinces,
     topCities,
     omzetByPlatform,
+    topProducts,
     marketingCosts,
     operatingExpense,
     prevPeriodStats,
@@ -228,6 +229,49 @@ export async function GET(request: NextRequest) {
             AND status NOT ILIKE '%dibatalkan%'
           GROUP BY platform
           ORDER BY total_omzet DESC
+        `,
+
+    // Produk penyumbang GMV tertinggi — murni dari order masuk, bukan payout.
+    // GMV memakai total_product_price: harga produk setelah diskon, sebelum fee marketplace.
+    gteDate && lteDate
+      ? prisma.$queryRaw<{ product_key: string; product_name: string; sku: string; total_qty: bigint; total_gmv: bigint; order_count: bigint }[]>`
+          SELECT
+            COALESCE(NULLIF(sku, ''), NULLIF(product_name, ''), 'Produk tanpa SKU') AS product_key,
+            COALESCE(NULLIF(MAX(product_name), ''), NULLIF(MAX(sku), ''), 'Produk tanpa SKU') AS product_name,
+            COALESCE(NULLIF(MAX(sku), ''), '') AS sku,
+            COALESCE(SUM(CAST(qty AS bigint)), 0) AS total_qty,
+            COALESCE(SUM(CAST(total_product_price AS bigint)), 0) AS total_gmv,
+            COUNT(DISTINCT order_no) AS order_count
+          FROM orders
+          WHERE trx_date >= ${gteDate} AND trx_date <= ${lteDate}
+            AND status NOT ILIKE '%batal%'
+            AND status NOT ILIKE '%cancel%'
+            AND status NOT ILIKE '%dibatalkan%'
+            AND status NOT ILIKE '%retur%'
+            AND status NOT ILIKE '%return%'
+            AND status NOT ILIKE '%dikembalikan%'
+          GROUP BY COALESCE(NULLIF(sku, ''), NULLIF(product_name, ''), 'Produk tanpa SKU')
+          ORDER BY total_gmv DESC, total_qty DESC
+          LIMIT 5
+        `
+      : prisma.$queryRaw<{ product_key: string; product_name: string; sku: string; total_qty: bigint; total_gmv: bigint; order_count: bigint }[]>`
+          SELECT
+            COALESCE(NULLIF(sku, ''), NULLIF(product_name, ''), 'Produk tanpa SKU') AS product_key,
+            COALESCE(NULLIF(MAX(product_name), ''), NULLIF(MAX(sku), ''), 'Produk tanpa SKU') AS product_name,
+            COALESCE(NULLIF(MAX(sku), ''), '') AS sku,
+            COALESCE(SUM(CAST(qty AS bigint)), 0) AS total_qty,
+            COALESCE(SUM(CAST(total_product_price AS bigint)), 0) AS total_gmv,
+            COUNT(DISTINCT order_no) AS order_count
+          FROM orders
+          WHERE status NOT ILIKE '%batal%'
+            AND status NOT ILIKE '%cancel%'
+            AND status NOT ILIKE '%dibatalkan%'
+            AND status NOT ILIKE '%retur%'
+            AND status NOT ILIKE '%return%'
+            AND status NOT ILIKE '%dikembalikan%'
+          GROUP BY COALESCE(NULLIF(sku, ''), NULLIF(product_name, ''), 'Produk tanpa SKU')
+          ORDER BY total_gmv DESC, total_qty DESC
+          LIMIT 5
         `,
 
     // Ad Spend per Platform — dari wallet yang ditandai isAdsBudget=true
@@ -561,6 +605,14 @@ export async function GET(request: NextRequest) {
         count: Number(c.cnt),
       })),
     },
+    topProducts: (topProducts as any[]).map(p => ({
+      key: p.product_key,
+      productName: p.product_name,
+      sku: p.sku,
+      totalQty: Number(p.total_qty),
+      gmv: Number(p.total_gmv),
+      orderCount: Number(p.order_count),
+    })),
   })
   } catch (err) {
     console.error('[dashboard/stats] Error:', err)
