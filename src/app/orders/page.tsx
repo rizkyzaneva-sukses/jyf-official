@@ -27,6 +27,7 @@ function StatusBadge({ status }: { status: string }) {
   if (!status) return <span className="badge-muted">—</span>
   const s = status.toLowerCase()
   if (s.includes('retur') || s.includes('return') || s.includes('dikembalikan')) return <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-orange-900/40 text-orange-400">Retur</span>
+  if (s.startsWith('dicairkan')) return <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-cyan-900/40 text-cyan-300">Dicairkan</span>
   if (s.startsWith('terkirim') || s.startsWith('shipped')) return <span className="badge-success">Terkirim</span>
   if (s.includes('batal') || s.includes('cancel')) return <span className="badge-danger">Batal</span>
   if (s.includes('selesai') || s.includes('delivered')) return <span className="badge-info">Selesai</span>

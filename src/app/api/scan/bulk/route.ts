@@ -59,7 +59,12 @@ export async function POST(request: NextRequest) {
       if (exist) {
         result.duplicateSkipped++
       } else {
-        const terkirimStatus = `TERKIRIM | ${rawDate}`
+        // Jangan timpa status kas yang sudah dicairkan ketika file scan diunggah belakangan.
+        const isPaid = await prisma.payout.findUnique({
+          where: { orderNo: matchedOrder.orderNo },
+          select: { id: true },
+        })
+        const terkirimStatus = isPaid ? 'DICAIRKAN' : `TERKIRIM | ${rawDate}`
 
         await prisma.order.updateMany({
           where: { orderNo: matchedOrder.orderNo },

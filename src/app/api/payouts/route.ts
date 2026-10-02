@@ -393,6 +393,27 @@ export async function POST(request: NextRequest) {
       ])
       inserted += chunk.length
     }
+    // Payout positif menandakan order sudah diterima sebagai kas.
+    // Retur tetap dipertahankan agar tidak salah diklasifikasikan sebagai pencairan.
+    const paidOrderNos = newPayouts
+      .filter((p: Record<string, unknown>) => {
+        const omzet = n(p.omzet)
+        const platformFee = n(p.platform_fee || p.platformFee)
+        const amsFee = n(p.ams_fee || p.amsFee)
+        return omzet - platformFee - amsFee > 0
+      })
+      .map((p: Record<string, unknown>) => String(p.order_no || p.orderNo || ''))
+
+    await prisma.order.updateMany({
+      where: {
+        orderNo: { in: paidOrderNos },
+        OR: [
+          { status: { startsWith: 'TERKIRIM', mode: 'insensitive' } },
+          { status: { startsWith: 'SHIPPED', mode: 'insensitive' } },
+        ],
+      },
+      data: { status: 'DICAIRKAN' },
+    })
     return apiSuccess({ inserted, skipped: payouts.length - newPayouts.length }, 201)
   }
 
@@ -783,6 +804,24 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Status order mengikuti siklus kas: Terkirim → Dicairkan.
+  // Jangan timpa order RETUR yang bisa memiliki baris settlement negatif.
+  const paidOrderNos = allPayoutInserts
+    .filter(p => p.totalIncome > 0)
+    .map(p => p.orderNo)
+  if (paidOrderNos.length > 0) {
+    await prisma.order.updateMany({
+      where: {
+        orderNo: { in: paidOrderNos },
+        OR: [
+          { status: { startsWith: 'TERKIRIM', mode: 'insensitive' } },
+          { status: { startsWith: 'SHIPPED', mode: 'insensitive' } },
+        ],
+      },
+      data: { status: 'DICAIRKAN' },
+    })
+  }
+
   // orders.trx_date TIDAK diubah — tanggal cair hanya di payouts.released_date
 
   return apiSuccess({ isPreview: false, ...summaryResult }, 201)
@@ -816,7 +855,15 @@ export async function DELETE(request: NextRequest) {
       }),
       prisma.payout.deleteMany({
         where: { id: { in: ids } }
-      })
+      }),
+      // Payout dihapus: kembalikan order kas yang sebelumnya sudah cair ke antrean terkirim.
+      prisma.order.updateMany({
+        where: {
+          orderNo: { in: orderNos },
+          status: { startsWith: 'DICAIRKAN', mode: 'insensitive' },
+        },
+        data: { status: 'TERKIRIM' },
+      }),
     ])
 
     return apiSuccess({ message: `${payouts.length} payout berhasil dihapus` })

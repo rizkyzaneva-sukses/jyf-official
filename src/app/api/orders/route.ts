@@ -49,14 +49,7 @@ export async function GET(request: NextRequest) {
       ],
     }
   } else if (statusGroup === 'dicairkan') {
-    // Cek order_no ada di tabel payouts (tidak bergantung pada orderId link)
-    const payoutOrderNos = await prisma.payout.findMany({
-      select: { orderNo: true },
-      where: { orderNo: { not: undefined } },
-      distinct: ['orderNo'],
-    }).then(rows => rows.map(r => r.orderNo).filter((s): s is string => typeof s === 'string' && s.length > 0))
-
-    statusFilter = { orderNo: { in: payoutOrderNos } }
+    statusFilter = { status: { startsWith: 'DICAIRKAN', mode: 'insensitive' } }
   } else if (statusGroup === 'retur') {
     statusFilter = {
       OR: [

@@ -39,6 +39,11 @@ export async function DELETE(request: NextRequest) {
     prisma.walletLedger.deleteMany({ where: { trxType: 'PAYOUT' } }),
     prisma.walletLedger.deleteMany({ where: { trxType: 'EXPENSE', OR: legacyReturOR } }),
     prisma.payout.deleteMany({}),
+    // Reset payout juga mengembalikan status kas order ke tahap sebelum pencairan.
+    prisma.order.updateMany({
+      where: { status: { startsWith: 'DICAIRKAN', mode: 'insensitive' } },
+      data: { status: 'TERKIRIM' },
+    }),
     // Reset trxDate orders ke null agar bersih sebelum re-import
     prisma.order.updateMany({ where: { trxDate: { not: null } }, data: { trxDate: null } }),
   ])

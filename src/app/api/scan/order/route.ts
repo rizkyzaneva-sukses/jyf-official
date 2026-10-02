@@ -23,8 +23,13 @@ export async function POST(request: NextRequest) {
     return apiError(`Resi "${airwaybill}" tidak ditemukan`, 404)
   }
 
-  const terkirimStatus = `TERKIRIM | ${todayWIBStr()}`
   const orderNo = matchedOrder.orderNo
+  // Scan yang terlambat tidak boleh menurunkan order yang sudah dicairkan ke Terkirim.
+  const isPaid = await prisma.payout.findUnique({
+    where: { orderNo },
+    select: { id: true },
+  })
+  const terkirimStatus = isPaid ? 'DICAIRKAN' : `TERKIRIM | ${todayWIBStr()}`
 
   // Update ALL orders with same order_no
   const updateResult = await prisma.order.updateMany({
