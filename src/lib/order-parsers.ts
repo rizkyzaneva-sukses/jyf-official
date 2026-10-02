@@ -469,7 +469,9 @@ export function parseLazadaOrders(
     const sourceStatus = String(row.status ?? '').trim()
     if (isLazadaCancel(sourceStatus)) continue
 
-    const status = toAppOrderStatus(sourceStatus, isReturnStatus(sourceStatus))
+    const status = sourceStatus.toLowerCase() === 'confirmed'
+      ? 'TERKIRIM'
+      : toAppOrderStatus(sourceStatus, isReturnStatus(sourceStatus))
 
     const rawSku = String(row.sellerSku || row.lazadaSku || '').trim()
     const qty = parseQty(row.quantity ?? row.itemQuantity ?? row.qty)

@@ -663,11 +663,11 @@ describe('parseLazadaOrders', () => {
     expect(result.orders[0].status).toBe('TERKIRIM')
   })
 
-  it('maps confirmed Lazada orders to PERLU DIKIRIM', () => {
+  it('maps confirmed Lazada orders to TERKIRIM', () => {
     const result = parseLazadaOrders([
       makeLazadaRow({ status: 'confirmed' }),
     ], emptyHppMap, emptySkuMapping)
-    expect(result.orders[0].status).toBe('PERLU DIKIRIM')
+    expect(result.orders[0].status).toBe('TERKIRIM')
   })
 
   it('maps Lazada fields and parses date-compatible order data', () => {
