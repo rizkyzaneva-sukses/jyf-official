@@ -74,6 +74,16 @@ function BreakdownRow({ shopeeVal, tiktokVal }: { shopeeVal: number; tiktokVal: 
 }
 
 // ─── Main Page ────────────────────────────────────────
+function fixWorksheetRange(ws: XLSX.WorkSheet | undefined): XLSX.WorkSheet | undefined {
+  if (!ws) return ws
+  const addresses = Object.keys(ws).filter(key => !key.startsWith('!'))
+  const cells = addresses.map(address => XLSX.utils.decode_cell(address))
+  if (cells.length === 0) return ws
+  const maxRow = cells.reduce((max, cell) => Math.max(max, cell.r), 0)
+  const maxCol = cells.reduce((max, cell) => Math.max(max, cell.c), 0)
+  ws['!ref'] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: maxRow, c: maxCol } })
+  return ws
+}
 export default function PayoutsPage() {
   const qc = useQueryClient()
   const { toast } = useToast()
@@ -296,8 +306,9 @@ export default function PayoutsPage() {
           }
         }
 
-        const ws = wb.Sheets['Order details']
-        if (!ws) throw new Error('Sheet "Order details" tidak ditemukan')
+        const ws = wb.Sheets['Order details'] || wb.Sheets['Detail pesanan']
+        if (!ws) throw new Error('Sheet "Order details" / "Detail pesanan" tidak ditemukan')
+        fixWorksheetRange(ws)
         const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: 0 })
         rows = rawRows.map(normalizeRow)
       }

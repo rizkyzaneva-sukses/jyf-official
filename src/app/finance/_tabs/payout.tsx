@@ -114,6 +114,17 @@ function extractPeriodFromRows(rows: Record<string, unknown>[]) {
   }
 }
 
+function fixWorksheetRange(ws: XLSX.WorkSheet | undefined): XLSX.WorkSheet | undefined {
+  if (!ws) return ws
+  const addresses = Object.keys(ws).filter(key => !key.startsWith('!'))
+  const cells = addresses.map(address => XLSX.utils.decode_cell(address))
+  if (cells.length === 0) return ws
+  const maxRow = cells.reduce((max, cell) => Math.max(max, cell.r), 0)
+  const maxCol = cells.reduce((max, cell) => Math.max(max, cell.c), 0)
+  ws['!ref'] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: maxRow, c: maxCol } })
+  return ws
+}
+
 function getWorksheetRows(ws: XLSX.WorkSheet): unknown[][] {
   const addresses = Object.keys(ws).filter(key => !key.startsWith('!'))
   const cells = addresses.map(address => XLSX.utils.decode_cell(address))
@@ -459,6 +470,7 @@ export function PayoutTab() {
 
         const ws = getWorkbookSheet(wb, ['Order details', 'Order Details', 'Detail pesanan', 'Detail Pesanan'])
         if (!ws) throw new Error('Sheet detail pesanan TikTok tidak ditemukan')
+        fixWorksheetRange(ws)
         const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: 0 })
         rows = rawRows.map(normalizeRow)
 
