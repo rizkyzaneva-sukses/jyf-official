@@ -31,6 +31,10 @@ export async function GET(request: NextRequest) {
             OR: [
               { status: { contains: 'terkirim', mode: 'insensitive' } },
               { status: { contains: 'shipped', mode: 'insensitive' } },
+              { status: { contains: 'dicairkan', mode: 'insensitive' } },
+              { status: { contains: 'selesai', mode: 'insensitive' } },
+              { status: { contains: 'delivered', mode: 'insensitive' } },
+              { status: { contains: 'completed', mode: 'insensitive' } },
               { status: { contains: 'batal', mode: 'insensitive' } },
               { status: { contains: 'cancel', mode: 'insensitive' } },
               { status: { contains: 'retur', mode: 'insensitive' } },

@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       }[]>`
         SELECT
           CASE
-            WHEN status LIKE 'TERKIRIM%' THEN 'terkirim'
+            WHEN status LIKE 'TERKIRIM%' OR status LIKE 'DICAIRKAN%' OR status ILIKE '%shipped%' OR status ILIKE '%selesai%' OR status ILIKE '%delivered%' THEN 'terkirim'
             WHEN status ILIKE '%batal%' OR status ILIKE '%cancel%' OR status ILIKE '%dibatalkan%' THEN 'batal'
             ELSE 'perlu_dikirim'
           END AS group_key,

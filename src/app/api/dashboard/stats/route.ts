@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       ? prisma.$queryRaw<{ group_key: string; cnt: bigint; total_omzet: bigint }[]>`
           SELECT
             CASE
-              WHEN status ILIKE '%terkirim%' OR status ILIKE '%shipped%' THEN 'terkirim'
+              WHEN status ILIKE '%terkirim%' OR status ILIKE '%shipped%' OR status ILIKE '%dicairkan%' OR status ILIKE '%selesai%' OR status ILIKE '%delivered%' OR status ILIKE '%completed%' THEN 'terkirim'
               WHEN status ILIKE '%batal%' OR status ILIKE '%cancel%' OR status ILIKE '%dibatalkan%' THEN 'batal'
               WHEN status ILIKE '%retur%' OR status ILIKE '%return%' OR status ILIKE '%dikembalikan%' THEN 'retur'
               ELSE 'perlu_dikirim'
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
       : prisma.$queryRaw<{ group_key: string; cnt: bigint; total_omzet: bigint }[]>`
           SELECT
             CASE
-              WHEN status ILIKE '%terkirim%' OR status ILIKE '%shipped%' THEN 'terkirim'
+              WHEN status ILIKE '%terkirim%' OR status ILIKE '%shipped%' OR status ILIKE '%dicairkan%' OR status ILIKE '%selesai%' OR status ILIKE '%delivered%' OR status ILIKE '%completed%' THEN 'terkirim'
               WHEN status ILIKE '%batal%' OR status ILIKE '%cancel%' OR status ILIKE '%dibatalkan%' THEN 'batal'
               WHEN status ILIKE '%retur%' OR status ILIKE '%return%' OR status ILIKE '%dikembalikan%' THEN 'retur'
               ELSE 'perlu_dikirim'
@@ -118,6 +118,10 @@ export async function GET(request: NextRequest) {
       FROM orders
       WHERE status NOT ILIKE '%terkirim%'
         AND status NOT ILIKE '%shipped%'
+        AND status NOT ILIKE '%dicairkan%'
+        AND status NOT ILIKE '%selesai%'
+        AND status NOT ILIKE '%delivered%'
+        AND status NOT ILIKE '%completed%'
         AND status NOT ILIKE '%batal%'
         AND status NOT ILIKE '%cancel%'
         AND status NOT ILIKE '%dibatalkan%'

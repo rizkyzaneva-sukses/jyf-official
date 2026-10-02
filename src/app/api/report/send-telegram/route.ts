@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       prisma.$queryRaw<{ group_key: string; cnt: bigint; total_omzet: bigint; total_hpp: bigint }[]>`
         SELECT
           CASE
-            WHEN status LIKE 'TERKIRIM%' THEN 'terkirim'
+            WHEN status LIKE 'TERKIRIM%' OR status LIKE 'DICAIRKAN%' OR status ILIKE '%shipped%' OR status ILIKE '%selesai%' OR status ILIKE '%delivered%' THEN 'terkirim'
             WHEN status ILIKE '%batal%' OR status ILIKE '%cancel%' OR status ILIKE '%dibatalkan%' THEN 'batal'
             ELSE 'perlu_dikirim'
           END AS group_key,

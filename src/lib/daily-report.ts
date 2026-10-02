@@ -163,6 +163,9 @@ export async function buildDailyReport(): Promise<string> {
             FROM orders
             WHERE trx_date >= ${gte10d} AND trx_date <= ${lteToday}
               AND status NOT LIKE 'TERKIRIM%'
+              AND status NOT LIKE 'DICAIRKAN%'
+              AND status NOT ILIKE '%selesai%'
+              AND status NOT ILIKE '%delivered%'
               AND status NOT ILIKE '%batal%'
               AND status NOT ILIKE '%cancel%'
               AND status NOT ILIKE '%dibatalkan%'
