@@ -4,7 +4,17 @@ import { isFinancingExpenseCategory, isFinancingIncomeCategory } from './financi
 
 type LedgerWhere = Prisma.WalletLedgerWhereInput
 
-const EXPENSE_PREFIXES = ['Bayar Utang', 'Pembayaran Utang', 'Piutang - '] as const
+const EXPENSE_PREFIXES = [
+  'Bayar Utang',
+  'Pembayaran Utang',
+  'Piutang - ',
+  'Shodaqoh',
+  'Infaq',
+  'Zakat',
+  'Sedekah',
+  'Beban Sumbangan dan Zakat',
+] as const
+
 const INCOME_PREFIXES = ['Utang - ', 'Terima Piutang', 'Suntikan'] as const
 
 export function financingExpenseWhere(): LedgerWhere {

@@ -4,7 +4,17 @@
  * Posisinya di neraca (kas, utang, piutang, modal) dan di arus kas.
  */
 
-const FINANCING_EXPENSE_PREFIXES = ['bayar utang', 'pembayaran utang', 'piutang - '] as const
+const FINANCING_EXPENSE_PREFIXES = [
+  'bayar utang',
+  'pembayaran utang',
+  'piutang - ',
+  'shodaqoh',
+  'infaq',
+  'zakat',
+  'sedekah',
+  'beban sumbangan dan zakat',
+] as const
+
 const FINANCING_INCOME_PREFIXES = ['utang - ', 'terima piutang', 'suntikan'] as const
 
 export function isFinancingExpenseCategory(category: string | null | undefined): boolean {

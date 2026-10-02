@@ -64,4 +64,8 @@ workflow_*.json
 DATA RAHASIA/
 *DATA RAHASIA*
 
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
+
 
