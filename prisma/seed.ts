@@ -36,11 +36,13 @@ async function main() {
 
   // ── 2. Default Wallets ─────────────────────────────────
   const walletNames = [
-    'Kas Utama',
-    'BCA Bisnis',
-    'BRI Bisnis',
+    'Kas Tunai',
+    'BCA 78070',
+    'BCA Petty Cash',
+    'BCA 52664',
     'TikTok Shop Wallet',
     'Shopee Wallet',
+    'Lazada Wallet',
   ]
   for (const name of walletNames) {
     await prisma.wallet.upsert({ where: { name }, update: {}, create: { name } })
@@ -56,6 +58,7 @@ async function main() {
     { categoryType: MasterCategoryType.EXPENSE_BEBAN, name: 'Gaji Karyawan' },
     { categoryType: MasterCategoryType.EXPENSE_NON_BEBAN, name: 'Investasi' },
     { categoryType: MasterCategoryType.EXPENSE_NON_BEBAN, name: 'Prive' },
+    { categoryType: MasterCategoryType.EXPENSE_NON_BEBAN, name: 'Shodaqoh & Infaq' },
   ]
   for (const c of categories) {
     await prisma.masterCategory.upsert({
@@ -82,6 +85,10 @@ async function main() {
     }
   }
   console.log(`   ✅ ${productCats.length} product categories ensured`)
+
+  // ── 5. Sync JYF Mall 2026 Data ────────────────────────
+  const { autoSyncJyfMall2026 } = await import('../src/lib/sync-jyf-mall-2026')
+  await autoSyncJyfMall2026()
 
   console.log('')
   console.log('🎉 Essential seed complete!')

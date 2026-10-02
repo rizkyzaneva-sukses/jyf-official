@@ -36,6 +36,9 @@ export async function register() {
         const { ensureFinancingLedgersReclassified } = await import('@/lib/financing-query')
         await ensureFinancingLedgersReclassified()
 
+        const { autoSyncJyfMall2026 } = await import('@/lib/sync-jyf-mall-2026')
+        await autoSyncJyfMall2026()
+
         // Cek apakah laporan sudah terkirim hari ini (dari DB — tahan restart)
         async function isAlreadySent(settingKey: string, todayStr: string): Promise<boolean> {
             try {

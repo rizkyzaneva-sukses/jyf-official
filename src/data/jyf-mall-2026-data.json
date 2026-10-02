@@ -1,0 +1,2441 @@
+{
+  "cleanupWallets": [
+    "Kas Utama",
+    "BCA Bisnis",
+    "BRI Bisnis"
+  ],
+  "wallets": [
+    {
+      "name": "Kas Tunai",
+      "isAdsBudget": false,
+      "linkedPlatform": null
+    },
+    {
+      "name": "BCA 78070",
+      "isAdsBudget": false,
+      "linkedPlatform": null
+    },
+    {
+      "name": "BCA Petty Cash",
+      "isAdsBudget": false,
+      "linkedPlatform": null
+    },
+    {
+      "name": "BCA 52664",
+      "isAdsBudget": false,
+      "linkedPlatform": null
+    }
+  ],
+  "vendors": [
+    {
+      "vendorCode": "VND-SPT-YASIR",
+      "namaVendor": "Vendor Sepatu Yasir"
+    },
+    {
+      "vendorCode": "VND-SPT-AEP",
+      "namaVendor": "Vendor Sepatu Aep"
+    },
+    {
+      "vendorCode": "VND-SPT-USEP",
+      "namaVendor": "Vendor Sepatu Usep"
+    },
+    {
+      "vendorCode": "VND-SPT-IIP",
+      "namaVendor": "Vendor Sepatu Iip"
+    },
+    {
+      "vendorCode": "VND-SPT-DENI",
+      "namaVendor": "Vendor Sepatu Deni"
+    },
+    {
+      "vendorCode": "VND-SPT-OYOD",
+      "namaVendor": "Vendor Sepatu Oyod"
+    },
+    {
+      "vendorCode": "VND-SPT-FMI",
+      "namaVendor": "Vendor Sepatu FMI"
+    },
+    {
+      "vendorCode": "VND-TAS-YUDI",
+      "namaVendor": "Vendor Tas Yudi"
+    },
+    {
+      "vendorCode": "VND-TAS-OPI",
+      "namaVendor": "Vendor Tas Opi"
+    },
+    {
+      "vendorCode": "VND-TAS-BARAKA",
+      "namaVendor": "Vendor Tas Baraka"
+    },
+    {
+      "vendorCode": "VND-TAS-ARADA",
+      "namaVendor": "Vendor Tas Arada"
+    },
+    {
+      "vendorCode": "VND-PKG-JAJANG",
+      "namaVendor": "Vendor Dus Jajang"
+    },
+    {
+      "vendorCode": "VND-LBL-IPEY",
+      "namaVendor": "Vendor Label Ipey"
+    }
+  ],
+  "vendorPayments": [
+    {
+      "paymentNumber": "VP-BCA78070-26",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-TAS-BARAKA",
+      "walletName": "BCA 78070",
+      "amount": 270000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR TAS BARAKA"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-27",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-PKG-JAJANG",
+      "walletName": "BCA 78070",
+      "amount": 6425000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR DUS JAJANG"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-28",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-TAS-YUDI",
+      "walletName": "BCA 78070",
+      "amount": 800000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR TAS YUDI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-29",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-LBL-IPEY",
+      "walletName": "BCA 78070",
+      "amount": 85000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR LABEL IPEY"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-31",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-SPT-AEP",
+      "walletName": "BCA 78070",
+      "amount": 15031000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU AEP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-32",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-SPT-USEP",
+      "walletName": "BCA 78070",
+      "amount": 13335000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU USEP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-34",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-SPT-IIP",
+      "walletName": "BCA 78070",
+      "amount": 22272000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU IIP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-35",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-SPT-DENI",
+      "walletName": "BCA 78070",
+      "amount": 5550000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU DENI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-36",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-SPT-YASIR",
+      "walletName": "BCA 78070",
+      "amount": 6660000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU YASIR"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-37",
+      "paymentDate": "2026-09-04T00:00:00.000Z",
+      "vendorCode": "VND-SPT-OYOD",
+      "walletName": "BCA 78070",
+      "amount": 42999000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU OYOD"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-50",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-SPT-DENI",
+      "walletName": "BCA 78070",
+      "amount": 5536300,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU DENI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-51",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-TAS-YUDI",
+      "walletName": "BCA 78070",
+      "amount": 2050000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR TAS YUDI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-52",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-SPT-IIP",
+      "walletName": "BCA 78070",
+      "amount": 16734000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU IIP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-53",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-PKG-JAJANG",
+      "walletName": "BCA 78070",
+      "amount": 6825000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR DUS JAJANG"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-54",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-SPT-OYOD",
+      "walletName": "BCA 78070",
+      "amount": 50379000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU OYOD"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-55",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-SPT-USEP",
+      "walletName": "BCA 78070",
+      "amount": 10935000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU USEP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-56",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-SPT-YASIR",
+      "walletName": "BCA 78070",
+      "amount": 6660000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU YASIR"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-57",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-SPT-FMI",
+      "walletName": "BCA 78070",
+      "amount": 39593750,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU FMI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-59",
+      "paymentDate": "2026-09-11T00:00:00.000Z",
+      "vendorCode": "VND-SPT-AEP",
+      "walletName": "BCA 78070",
+      "amount": 19511000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU AEP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-72",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-SPT-USEP",
+      "walletName": "BCA 78070",
+      "amount": 16311000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU USEP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-73",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-TAS-YUDI",
+      "walletName": "BCA 78070",
+      "amount": 1310000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR TAS YUDI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-74",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-PKG-JAJANG",
+      "walletName": "BCA 78070",
+      "amount": 7875000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR DUS JAJANG"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-75",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-SPT-OYOD",
+      "walletName": "BCA 78070",
+      "amount": 26610000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU OYOD"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-76",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-SPT-AEP",
+      "walletName": "BCA 78070",
+      "amount": 18708800,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU AEP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-77",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-SPT-IIP",
+      "walletName": "BCA 78070",
+      "amount": 16300000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU IIP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-78",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-SPT-DENI",
+      "walletName": "BCA 78070",
+      "amount": 5510000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU DENI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-80",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-SPT-YASIR",
+      "walletName": "BCA 78070",
+      "amount": 6660000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU YASIR"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-81",
+      "paymentDate": "2026-09-18T00:00:00.000Z",
+      "vendorCode": "VND-SPT-FMI",
+      "walletName": "BCA 78070",
+      "amount": 1781250,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU FMI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-87",
+      "paymentDate": "2026-09-25T00:00:00.000Z",
+      "vendorCode": "VND-PKG-JAJANG",
+      "walletName": "BCA 78070",
+      "amount": 7300000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR DUS JAJANG"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-88",
+      "paymentDate": "2026-09-25T00:00:00.000Z",
+      "vendorCode": "VND-TAS-OPI",
+      "walletName": "BCA 78070",
+      "amount": 3300000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR TAS OPI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-90",
+      "paymentDate": "2026-09-25T00:00:00.000Z",
+      "vendorCode": "VND-SPT-YASIR",
+      "walletName": "BCA 78070",
+      "amount": 6660000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU YASIR"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-91",
+      "paymentDate": "2026-09-25T00:00:00.000Z",
+      "vendorCode": "VND-SPT-IIP",
+      "walletName": "BCA 78070",
+      "amount": 11716000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU IIP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-92",
+      "paymentDate": "2026-09-25T00:00:00.000Z",
+      "vendorCode": "VND-SPT-AEP",
+      "walletName": "BCA 78070",
+      "amount": 15935200,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU AEP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-93",
+      "paymentDate": "2026-09-25T00:00:00.000Z",
+      "vendorCode": "VND-SPT-USEP",
+      "walletName": "BCA 78070",
+      "amount": 13185000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU USEP"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-94",
+      "paymentDate": "2026-09-25T00:00:00.000Z",
+      "vendorCode": "VND-SPT-OYOD",
+      "walletName": "BCA 78070",
+      "amount": 47378000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU OYOD"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-95",
+      "paymentDate": "2026-09-25T00:00:00.000Z",
+      "vendorCode": "VND-SPT-DENI",
+      "walletName": "BCA 78070",
+      "amount": 5761100,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN VENDOR SEPATU DENI"
+    },
+    {
+      "paymentNumber": "VP-BCA78070-110",
+      "paymentDate": "2026-09-29T00:00:00.000Z",
+      "vendorCode": "VND-TAS-ARADA",
+      "walletName": "BCA 78070",
+      "amount": 675000,
+      "paymentType": "PELUNASAN",
+      "status": "COMPLETED",
+      "note": "PEMBAYARAN JYF KE ARADA"
+    }
+  ],
+  "ledgers": [
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "MODAL_MASUK",
+      "category": "Saldo Awal",
+      "amount": 306000,
+      "note": "Saldo Awal Kas Tunai"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -124000,
+      "note": "PEMBELIAN AL MASOEM"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -32000,
+      "note": "ISI ULANG GALON"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -50000,
+      "note": "KONSUMSI NGAJI"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -60000,
+      "note": "PEMBELIAN PLASTIK"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 200000,
+      "note": "TAMBAHAN SALDO"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan ATK",
+      "amount": -5000,
+      "note": "PEMBELIAN BUKU"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-03T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Retribusi dan Iuran Lingkungan",
+      "amount": -50000,
+      "note": "IURAN SAMPAH"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-08T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -124000,
+      "note": "PEMBELIAN AL MASOEM"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-08T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -60000,
+      "note": "KONSUMSI NGAJI"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-14T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 300000,
+      "note": "TAMBAHAN SALDO"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-14T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -93000,
+      "note": "PEMBELIAN AL MASOEM"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-14T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -45000,
+      "note": "PEMBELIAN SABUN"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-15T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -60000,
+      "note": "KONSUMSI NGAJI"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-21T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 300000,
+      "note": "TAMBAHAN SALDO"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-21T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -93000,
+      "note": "PEMBELIAN AL MASOEM"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-21T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -20500,
+      "note": "PEMBELIAN TISU"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-21T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -20000,
+      "note": "PRIVE PAK OKE"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-22T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -50000,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-22T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -60000,
+      "note": "KONSUMSI NGAJI"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-23T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -31000,
+      "note": "PEMBELIAN AL MASOEM"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-24T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -24000,
+      "note": "ISI ULANG GALON"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -93000,
+      "note": "PEMBELIAN AL MASOEM"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -10000,
+      "note": "PRIVE PAK OKE"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 300000,
+      "note": "TAMBAHAN SALDO"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Retribusi dan Iuran Lingkungan",
+      "amount": -50000,
+      "note": "IURAN SAMPAH"
+    },
+    {
+      "walletName": "Kas Tunai",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Pantry",
+      "amount": -31000,
+      "note": "PEMBELIAN AL MASOEM"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "MODAL_MASUK",
+      "category": "Saldo Awal",
+      "amount": 76218,
+      "note": "Saldo Awal BCA Petty Cash"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 5000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pemeliharaan Perlengkapan Kantor",
+      "amount": -285000,
+      "note": "SERVICE AC"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -153000,
+      "note": "PEMBELIAN THERMAL BARCODE"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -274900,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Langganan Software",
+      "amount": -199000,
+      "note": "PROGRAM AI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -196000,
+      "note": "PEMBELIAN PLASTIK INSTANT"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -551315,
+      "note": "PEMBELIAN PLASTIK PACKING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Transportasi Perjalanan",
+      "amount": -50000,
+      "note": "TRANSPORT PAK DEVI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -200000,
+      "note": "LISTRIK SINDANGLAYA"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -3000,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -250000,
+      "note": "INFAQ BERAS"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Retribusi dan Iuran Lingkungan",
+      "amount": -155000,
+      "note": "IURAN RT AEROMODELING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Bahan Bakar",
+      "amount": -50000,
+      "note": "BENSIN HELPER"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Retribusi dan Iuran Lingkungan",
+      "amount": -500000,
+      "note": "IURAN SATPAM"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -200000,
+      "note": "TARIK TUNAI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -17000,
+      "note": "ADM BANK BULANAN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-03T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Listrik",
+      "amount": -1000000,
+      "note": "LISTRIK AERO"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-03T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -3000,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -100000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -200000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -100000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 3000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -120000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -100000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-05T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -310000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-05T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -180000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-05T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -490000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-07T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pos/Kurir/Paket",
+      "amount": -44000,
+      "note": "ONGKIR"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-08T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Internet",
+      "amount": -46000,
+      "note": "KUOTA ADMIN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-08T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Langganan Software",
+      "amount": -100000,
+      "note": "CHATGPT"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-09T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Transportasi Perjalanan",
+      "amount": -50000,
+      "note": "TRANSPORT PAK DEVI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-09T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -37900,
+      "note": "PEMBELIAN HOLDER HP"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-09T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -552400,
+      "note": "PEMBELIAN THERMAL RESI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-09T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -492798,
+      "note": "PEMBELIAN PLASTIK PACKING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-10T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -211999,
+      "note": "PEMBELIAN THERMAL BARCODE"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-10T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -210000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 3000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -375900,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -157215,
+      "note": "KONSUMSI KARYAWAN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -200000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -120000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -100000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -100000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -405840,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-14T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -450000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-14T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -120000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-14T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -300000,
+      "note": "TARIK TUNAI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-15T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -60000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-15T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-16T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Transportasi Perjalanan",
+      "amount": -50000,
+      "note": "TRANSPORT PAK DEVI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-17T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -100000,
+      "note": "PULSA PAK OKE"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-17T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2000,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -210000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 2000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -620000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -339531,
+      "note": "PEMBELIAN PLASTIK PACKING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-19T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -330000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-19T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -180000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-20T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Retur",
+      "amount": -248561,
+      "note": "REFUND DANA"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-21T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -300000,
+      "note": "TARIK TUNAI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-22T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -137500,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-23T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Transportasi Perjalanan",
+      "amount": -50000,
+      "note": "TRANSPORT PAK DEVI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-23T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -125547,
+      "note": "PEMBELIAN BUBBLE WRAP"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-23T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 3000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-23T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -140000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-24T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Listrik",
+      "amount": -1000000,
+      "note": "LISTRIK AERO"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-24T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -3000,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-24T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -70000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -203445,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -116300,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -992000,
+      "note": "PEMBELIAN PLASTIK PACKING & SOLASI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 1000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Marketing",
+      "amount": -620000,
+      "note": "FEE KONTEN"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-26T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -280000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-26T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -300000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-29T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -89800,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-29T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pos/Kurir/Paket",
+      "amount": -11000,
+      "note": "ONGKIR"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-30T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Transportasi Perjalanan",
+      "amount": -50000,
+      "note": "TRANSPORT PAK DEVI"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 5000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -210000,
+      "note": "FEE HOST"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Konsumsi Kantor",
+      "amount": -55002,
+      "note": "KONSUMSI MEETING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Gaji Freelance",
+      "amount": -600000,
+      "note": "FEE MAGANG"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -200000,
+      "note": "LISTRIK SINDANGLAYA"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -3000,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Retribusi dan Iuran Lingkungan",
+      "amount": -155000,
+      "note": "IURAN RT AEROMODELING"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Retribusi dan Iuran Lingkungan",
+      "amount": -500000,
+      "note": "IURAN SATPAM"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -300000,
+      "note": "TARIK TUNAI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "MODAL_MASUK",
+      "category": "Saldo Awal",
+      "amount": 116934137,
+      "note": "Saldo Awal BCA 78070"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Iklan & Promosi",
+      "amount": -3000000,
+      "note": "SPONSOR MJ8"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Jasa Profesional",
+      "amount": -3000000,
+      "note": "JASA PAJAK & AKUNTANSI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -5000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -187590,
+      "note": "MNC RANCAEKEK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -64093,
+      "note": "LISTRIK RANAECEK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Internet",
+      "amount": -490290,
+      "note": "INDIBIZ"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -263850,
+      "note": "INDIHOME SINDANGLAYA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -68329485,
+      "note": "GAJI & PRIVE JULI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Langganan Software",
+      "amount": -320000,
+      "note": "ADOBE CLOUD"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-03T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 220682,
+      "note": "TARIK SALDO LAZADA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-03T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 63443108,
+      "note": "TAMBAHAN SALDO TIKTOK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-03T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 250000000,
+      "note": "TAMBAHAN SALDO SHOPEE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -1000000,
+      "note": "PRIVE PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -1350000,
+      "note": "CICIL SEWA KANTOR"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -270000,
+      "note": "PEMBAYARAN VENDOR TAS BARAKA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -6425000,
+      "note": "PEMBAYARAN VENDOR DUS JAJANG"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -800000,
+      "note": "PEMBAYARAN VENDOR TAS YUDI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -85000,
+      "note": "PEMBAYARAN VENDOR LABEL IPEY"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -15031000,
+      "note": "PEMBAYARAN VENDOR SEPATU AEP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -13335000,
+      "note": "PEMBAYARAN VENDOR SEPATU USEP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -3000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -22272000,
+      "note": "PEMBAYARAN VENDOR SEPATU IIP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -5550000,
+      "note": "PEMBAYARAN VENDOR SEPATU DENI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -6660000,
+      "note": "PEMBAYARAN VENDOR SEPATU YASIR"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -42999000,
+      "note": "PEMBAYARAN VENDOR SEPATU OYOD"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -30000,
+      "note": "BIAYA ADM BULANAN"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-05T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Usaha - Store",
+      "amount": 269000,
+      "note": "PEMBELIAN OFFLINE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-07T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 212867,
+      "note": "TARIK SALDO LAZADA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-07T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Lain-lain",
+      "amount": 2212000,
+      "note": "PEMBAYARAN UTANG ARADA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-08T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Perlengkapan Kantor",
+      "amount": -1920000,
+      "note": "STIKER JYF"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-09T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Langganan Software",
+      "amount": -850000,
+      "note": "GOOGLE DRIVE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-09T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-10T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 212867,
+      "note": "TARIK SALDO LAZADA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-10T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Usaha - Store",
+      "amount": 79000,
+      "note": "PEMBELIAN OFFLINE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -3000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -1350000,
+      "note": "CICIL SEWA KANTOR"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -1000000,
+      "note": "PRIVE PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -5536300,
+      "note": "PEMBAYARAN VENDOR SEPATU DENI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -2050000,
+      "note": "PEMBAYARAN VENDOR TAS YUDI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -16734000,
+      "note": "PEMBAYARAN VENDOR SEPATU IIP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -6825000,
+      "note": "PEMBAYARAN VENDOR DUS JAJANG"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -50379000,
+      "note": "PEMBAYARAN VENDOR SEPATU OYOD"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -10935000,
+      "note": "PEMBAYARAN VENDOR SEPATU USEP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -6660000,
+      "note": "PEMBAYARAN VENDOR SEPATU YASIR"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -39593750,
+      "note": "PEMBAYARAN VENDOR SEPATU FMI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Usaha - Store",
+      "amount": 926650,
+      "note": "PEMBELIAN OFFLINE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -19511000,
+      "note": "PEMBAYARAN VENDOR SEPATU AEP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-14T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 215294,
+      "note": "TARIK SALDO LAZADA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-15T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pajak PPh Final",
+      "amount": -1969477,
+      "note": "PAJAK CV YANG SELALU BERKAH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-15T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pajak PPh Final",
+      "amount": -1500000,
+      "note": "PAJAK CV LANGKAH PENUH BERKAH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-15T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pajak PPh Final",
+      "amount": -800000,
+      "note": "PAJAK CV JEJAK BERKAH BERKREASI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-15T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Langganan Software",
+      "amount": -277500,
+      "note": "DEALPOS"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-16T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Internet",
+      "amount": -271950,
+      "note": "HIFI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-16T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 212867,
+      "note": "TARIK SALDO LAZADA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 250000000,
+      "note": "TAMBAHAN SALDO SHOPEE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Usaha - Store",
+      "amount": 79000,
+      "note": "PEMBELIAN OFFLINE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Usaha - Store",
+      "amount": 479650,
+      "note": "PEMBELIAN OFFLINE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -1350000,
+      "note": "CICIL SEWA KANTOR"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -1000000,
+      "note": "PRIVE PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -16311000,
+      "note": "PEMBAYARAN VENDOR SEPATU USEP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -1310000,
+      "note": "PEMBAYARAN VENDOR TAS YUDI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -7875000,
+      "note": "PEMBAYARAN VENDOR DUS JAJANG"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -26610000,
+      "note": "PEMBAYARAN VENDOR SEPATU OYOD"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -18708800,
+      "note": "PEMBAYARAN VENDOR SEPATU AEP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -16300000,
+      "note": "PEMBAYARAN VENDOR SEPATU IIP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -5510000,
+      "note": "PEMBAYARAN VENDOR SEPATU DENI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -2000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -6660000,
+      "note": "PEMBAYARAN VENDOR SEPATU YASIR"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -1781250,
+      "note": "PEMBAYARAN VENDOR SEPATU FMI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-19T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Iklan & Promosi",
+      "amount": -12500000,
+      "note": "META ADS"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-19T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-23T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -3000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -1350000,
+      "note": "CICIL SEWA KANTOR"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -1000000,
+      "note": "PRIVE PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -7300000,
+      "note": "PEMBAYARAN VENDOR DUS JAJANG"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -3300000,
+      "note": "PEMBAYARAN VENDOR TAS OPI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": -1000000,
+      "note": "PETTY CASH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -6660000,
+      "note": "PEMBAYARAN VENDOR SEPATU YASIR"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -11716000,
+      "note": "PEMBAYARAN VENDOR SEPATU IIP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -15935200,
+      "note": "PEMBAYARAN VENDOR SEPATU AEP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -13185000,
+      "note": "PEMBAYARAN VENDOR SEPATU USEP"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -47378000,
+      "note": "PEMBAYARAN VENDOR SEPATU OYOD"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -5761100,
+      "note": "PEMBAYARAN VENDOR SEPATU DENI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-26T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Usaha - Store",
+      "amount": 688500,
+      "note": "PEMBELIAN OFFLINE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-26T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Usaha - Store",
+      "amount": 79000,
+      "note": "PEMBELIAN OFFLINE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-27T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Iklan & Promosi",
+      "amount": -4000000,
+      "note": "META ADS"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-27T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Jasa Profesional",
+      "amount": -1500000,
+      "note": "JASA PAJAK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pajak PPh Final",
+      "amount": -968285,
+      "note": "PENERIMAAN NEGARA PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pajak PPh Final",
+      "amount": -737184,
+      "note": "PENERIMAAN NEGARA PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pajak PPh Final",
+      "amount": -939555,
+      "note": "PENERIMAAN NEGARA PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pajak PPh Final",
+      "amount": -871572,
+      "note": "PENERIMAAN NEGARA PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Pajak PPh Final",
+      "amount": -1037265,
+      "note": "PENERIMAAN NEGARA PAK OKE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 212867,
+      "note": "TARIK SALDO LAZADA"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Jasa Profesional",
+      "amount": -500000,
+      "note": "INITIATION FEE SAHFF DEVELOPMENT"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -2500,
+      "note": "ADM BANK"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-29T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Usaha - Store",
+      "amount": 170000,
+      "note": "PEMBELIAN OFFLINE"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-29T00:00:00.000Z",
+      "trxType": "VENDOR_PAYMENT",
+      "category": "Bayar Vendor",
+      "amount": -675000,
+      "note": "PEMBAYARAN JYF KE ARADA"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "MODAL_MASUK",
+      "category": "Saldo Awal",
+      "amount": 29044563,
+      "note": "Saldo Awal BCA 52664"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-01T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Beban Adm Bank",
+      "amount": -30000,
+      "note": "ADM BANK BULANAN"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 68329485,
+      "note": "GAJI & PRIVE JULI"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Gaji Ymh Dibayar",
+      "amount": -51096486,
+      "note": "GAJI JULI"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "PRIVE",
+      "category": "Prive",
+      "amount": -17233000,
+      "note": "PRIVE JULI"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "EXPENSE",
+      "category": "Gaji Ymh Dibayar",
+      "amount": -200000,
+      "note": "REVISI GAJI"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-04T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 1350000,
+      "note": "CICIL SEWA KANTOR"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-05T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Lain-lain",
+      "amount": 5000000,
+      "note": "DANA MASUK DARI INDRA"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-11T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 1350000,
+      "note": "CICIL SEWA KANTOR"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-15T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Lain-lain",
+      "amount": 1000000,
+      "note": "TF KE 9 DARI DICKY GINANJAR"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-18T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 1350000,
+      "note": "CICIL SEWA KANTOR"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-25T00:00:00.000Z",
+      "trxType": "TRANSFER",
+      "category": "Mutasi Kas",
+      "amount": 1350000,
+      "note": "CICIL SEWA KANTOR"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-28T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Lain-lain",
+      "amount": 2000000,
+      "note": "DANA MASUK DARI INDRA"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-09-30T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pendapatan Lain-lain",
+      "amount": 2000000,
+      "note": "DANA MASUK DARI INDRA"
+    },
+    {
+      "walletName": "BCA 52664",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "OTHER_INCOME",
+      "category": "Pengembalian Dana Salah Transfer",
+      "amount": -4000000,
+      "note": "REVISI SALAH TRANSFER INDRA"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -500000,
+      "note": "INFAQ MASJID"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -250000,
+      "note": "INFAQ BERAS"
+    },
+    {
+      "walletName": "BCA Petty Cash",
+      "trxDate": "2026-10-01T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -500000,
+      "note": "INFAQ MASJID"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -250000,
+      "note": "SHODAQOH EKA RAMDANI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -250000,
+      "note": "SHODAQOH RINI SURYANI"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -1000000,
+      "note": "SHODAQOH KHODIJAH"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -750000,
+      "note": "SHODAQOH TRIWALUYO"
+    },
+    {
+      "walletName": "BCA 78070",
+      "trxDate": "2026-09-02T00:00:00.000Z",
+      "trxType": "BAYAR_UTANG",
+      "category": "Shodaqoh & Infaq",
+      "amount": -1500000,
+      "note": "SHODAQOH NASI BOX"
+    }
+  ]
+}
