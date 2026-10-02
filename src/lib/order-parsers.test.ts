@@ -172,10 +172,44 @@ describe('parseShopeeOrders', () => {
     expect(result.orders).toHaveLength(0)
   })
 
-  it('skips refund orders (pengembalian dana)', () => {
+  it('imports refund orders as RETUR', () => {
     const rows = [makeShopeeRow({ 'Status Pesanan': 'Pengembalian Dana' })]
     const result = parseShopeeOrders(rows, emptyHppMap, emptySkuMapping)
-    expect(result.orders).toHaveLength(0)
+    expect(result.orders[0].status).toBe('RETUR')
+  })
+
+  it('maps completed Shopee orders to TERKIRIM', () => {
+    const result = parseShopeeOrders([makeShopeeRow()], emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('TERKIRIM')
+  })
+
+  it('maps approved Shopee returns to RETUR', () => {
+    const rows = [makeShopeeRow({ 'Status Pembatalan/ Pengembalian': 'Permintaan Disetujui' })]
+    const result = parseShopeeOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('RETUR')
+  })
+
+  it('keeps resolved Shopee issues as TERKIRIM', () => {
+    const rows = [makeShopeeRow({ 'Status Pembatalan/ Pengembalian': 'Masalah Diselesaikan' })]
+    const result = parseShopeeOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('TERKIRIM')
+  })
+
+  it('maps Shopee return status per item in a multi-item order', () => {
+    const rows = [
+      makeShopeeRow({
+        'No. Pesanan': 'SHP-RETUR-MIX',
+        'Nomor Referensi SKU': 'SKU-A',
+        'Status Pembatalan/ Pengembalian': '',
+      }),
+      makeShopeeRow({
+        'No. Pesanan': 'SHP-RETUR-MIX',
+        'Nomor Referensi SKU': 'SKU-B',
+        'Status Pembatalan/ Pengembalian': 'Permintaan Disetujui',
+      }),
+    ]
+    const result = parseShopeeOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders.map(order => order.status)).toEqual(['TERKIRIM', 'RETUR'])
   })
 
   it('groups multiple rows with same order number', () => {
@@ -407,6 +441,55 @@ describe('parseTikTokOrders', () => {
     expect(result.orders).toHaveLength(0)
   })
 
+  it('skips TikTok rows marked Cancel even when source status is Selesai', () => {
+    const rows = [makeTikTokRow({
+      'Order Status': 'Selesai',
+      'Cancelation/Return Type': 'Cancel',
+    })]
+    const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders).toHaveLength(0)
+  })
+
+  it('maps completed TikTok orders to TERKIRIM', () => {
+    const rows = [makeTikTokRow({ 'Order Status': 'Selesai' })]
+    const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('TERKIRIM')
+  })
+
+  it('maps TikTok Return/Refund rows to RETUR', () => {
+    const rows = [makeTikTokRow({
+      'Order Status': 'Selesai',
+      'Cancelation/Return Type': 'Return/Refund',
+    })]
+    const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('RETUR')
+  })
+
+  it('maps active TikTok orders to PERLU DIKIRIM', () => {
+    const rows = [makeTikTokRow({ 'Order Status': 'Dikirim' })]
+    const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('PERLU DIKIRIM')
+  })
+
+  it('maps TikTok packaging variations without Seller SKU to internal SKUs', () => {
+    const rows = [
+      makeTikTokRow({
+        'Order ID': 'TT-PACK-BESAR',
+        'Seller SKU': '',
+        'Product Name': 'Extra Packaging Dus Sepatu JYF & Bubble Wrap',
+        'Variation': 'Dus Besar + Bubble Wrap',
+      }),
+      makeTikTokRow({
+        'Order ID': 'TT-PACK-KECIL',
+        'Seller SKU': '',
+        'Product Name': 'Extra Packaging Dus Sepatu JYF & Bubble Wrap',
+        'Variation': 'Dus Kecil + Bubble Wrap',
+      }),
+    ]
+    const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders.map(order => order.sku)).toEqual(['J-DBW002', 'J-DBW001'])
+  })
+
   it('applies admin fee to realOmzet calculation', () => {
     const rows = [makeTikTokRow({
       'SKU Subtotal After Discount': '100000',
@@ -565,12 +648,26 @@ describe('parseLazadaOrders', () => {
     expect(result.orders[0].realOmzet).toBe(248200)
   })
 
-  it('skips canceled and returned Lazada orders', () => {
+  it('skips canceled Lazada orders and imports returned orders as RETUR', () => {
     const result = parseLazadaOrders([
       makeLazadaRow({ status: 'canceled' }),
       makeLazadaRow({ orderNumber: 'LZ-002', status: 'Package Returned' }),
     ], emptyHppMap, emptySkuMapping)
-    expect(result.orders).toHaveLength(0)
+    expect(result.orders).toHaveLength(1)
+    expect(result.orders[0].orderNo).toBe('LZ-002')
+    expect(result.orders[0].status).toBe('RETUR')
+  })
+
+  it('maps delivered Lazada orders to TERKIRIM', () => {
+    const result = parseLazadaOrders([makeLazadaRow()], emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('TERKIRIM')
+  })
+
+  it('maps confirmed Lazada orders to PERLU DIKIRIM', () => {
+    const result = parseLazadaOrders([
+      makeLazadaRow({ status: 'confirmed' }),
+    ], emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('PERLU DIKIRIM')
   })
 
   it('maps Lazada fields and parses date-compatible order data', () => {

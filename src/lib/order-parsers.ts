@@ -70,7 +70,6 @@ function parseQty(val: unknown): number {
 /** Status batal Shopee */
 const SHOPEE_CANCEL_STATUSES = [
   'dibatalkan', 'batal', 'cancelled', 'canceled',
-  'pengembalian dana', 'dikembalikan',
 ]
 
 function isShopeeCancel(status: string): boolean {
@@ -84,10 +83,56 @@ function isTikTokCancel(status: string): boolean {
   return TIKTOK_CANCEL_STATUSES.some(s => status.toLowerCase().includes(s))
 }
 
-/** Status Lazada yang bukan penjualan valid. */
+/** Status Lazada yang benar-benar batal dan tidak perlu diimpor. */
 function isLazadaCancel(status: string): boolean {
   const normalized = status.toLowerCase()
-  return ['canceled', 'cancelled', 'package returned', 'returned', 'return'].some(s => normalized.includes(s))
+  return ['canceled', 'cancelled'].some(s => normalized.includes(s))
+}
+
+function isReturnStatus(status: string): boolean {
+  const normalized = status.toLowerCase()
+  return ['retur', 'return', 'dikembalikan', 'pengembalian dana'].some(s => normalized.includes(s))
+}
+
+function isCompletedStatus(status: string): boolean {
+  const normalized = status.toLowerCase().trim()
+  return ['selesai', 'completed', 'delivered', 'terkirim'].some(s =>
+    normalized === s || normalized.startsWith(`${s} |`)
+  )
+}
+
+function toAppOrderStatus(sourceStatus: string, returned = false): string {
+  if (returned || isReturnStatus(sourceStatus)) return 'RETUR'
+  if (isCompletedStatus(sourceStatus)) return 'TERKIRIM'
+  return 'PERLU DIKIRIM'
+}
+
+function getShopeeReturnStatus(row: Record<string, unknown>): string {
+  return String(
+    row['Status Pembatalan/ Pengembalian']
+    || row['Status Pembatalan/Pengembalian']
+    || ''
+  ).trim()
+}
+
+/** Fallback SKU untuk add-on packaging TikTok yang diekspor tanpa Seller SKU. */
+function resolveTikTokSellerSku(row: Record<string, unknown>): string {
+  const sellerSku = String(row['Seller SKU'] || '').trim()
+  if (sellerSku) return sellerSku
+
+  const productName = String(row['Product Name'] || '').toLowerCase()
+  const variation = String(row['Variation'] || '').toLowerCase()
+  const isPackaging = productName.includes('packaging')
+    || productName.includes('dus sepatu')
+    || variation.includes('bubble wrap')
+
+  if (!isPackaging) return ''
+  if (variation.includes('dus besar') && variation.includes('bubble')) return 'J-DBW002'
+  if (variation.includes('dus kecil') && variation.includes('bubble')) return 'J-DBW001'
+  if (variation.includes('dus besar')) return 'J-DS002'
+  if (variation.includes('dus kecil')) return 'J-DS001'
+  if (variation.includes('bubble')) return 'J-PCK01'
+  return ''
 }
 
 /** TikTok menaruh satu baris deskripsi kolom tepat setelah header. */
@@ -186,9 +231,9 @@ export function parseShopeeOrders(
   for (const [orderNo, entries] of groups) {
     const firstEntry = entries[0]
     const firstRow = firstEntry.row
-    const status = String(firstRow['Status Pesanan'] || '').trim()
+    const sourceStatus = String(firstRow['Status Pesanan'] || '').trim()
 
-    if (isShopeeCancel(status)) continue
+    if (entries.some(({ row }) => isShopeeCancel(String(row['Status Pesanan'] || '').trim()))) continue
 
     const voucherSeller = parseShopeeNum(firstRow['Voucher Ditanggung Penjual'])
 
@@ -254,10 +299,15 @@ export function parseShopeeOrders(
       const fee = basePrice * (shopeeAdminFee / 100)
       const realOmzet = Math.round((basePrice - fee) * item.qty)
       const skuKey = item.sku.toLowerCase()
+      const itemSourceStatus = String(item.sourceRow['Status Pesanan'] || sourceStatus).trim()
+      const itemStatus = toAppOrderStatus(
+        itemSourceStatus,
+        getShopeeReturnStatus(item.sourceRow).toLowerCase() === 'permintaan disetujui',
+      )
 
       orders.push({
         orderNo,
-        status,
+        status: itemStatus,
         platform: 'Shopee',
         airwaybill: String(item.sourceRow['No. Resi'] || '').trim() || null,
         orderCreatedAt: String(item.sourceRow['Waktu Dana Dilepaskan'] || item.sourceRow['Waktu Pesanan Dibuat'] || '').trim() || null,
@@ -308,12 +358,19 @@ export function parseTikTokOrders(
     const orderNo = String(row['Order ID'] || '').trim()
     if (!orderNo) continue
 
-    const status = String(row['Order Status'] || '').trim()
-    if (isTikTokCancel(status)) continue
+    const sourceStatus = String(row['Order Status'] || '').trim()
+    const cancellationReturnType = String(
+      row['Cancelation/Return Type']
+      || row['Cancellation/Return Type']
+      || ''
+    ).trim()
+    if (isTikTokCancel(sourceStatus) || cancellationReturnType.toLowerCase().includes('cancel')) continue
+
+    const status = toAppOrderStatus(sourceStatus, isReturnStatus(cancellationReturnType))
 
     const subtotalAfterDisc = parseTikTokNum(row['SKU Subtotal After Discount'])
     const qty = parseQty(row['Quantity'])
-    const rawSku = String(row['Seller SKU'] || '').trim()
+    const rawSku = resolveTikTokSellerSku(row)
 
     if (rawSku.includes('+')) {
       const resolved = resolveCombinedSku(rawSku, skuMappingMap)
@@ -409,8 +466,10 @@ export function parseLazadaOrders(
     const orderNo = String(row.orderNumber ?? '').trim()
     if (!orderNo) continue
 
-    const status = String(row.status ?? '').trim()
-    if (isLazadaCancel(status)) continue
+    const sourceStatus = String(row.status ?? '').trim()
+    if (isLazadaCancel(sourceStatus)) continue
+
+    const status = toAppOrderStatus(sourceStatus, isReturnStatus(sourceStatus))
 
     const rawSku = String(row.sellerSku || row.lazadaSku || '').trim()
     const qty = parseQty(row.quantity ?? row.itemQuantity ?? row.qty)
