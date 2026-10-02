@@ -122,11 +122,13 @@ describe('getDateRange', () => {
     expect(result.label).toBe('Bulan Ini')
   })
 
-  it('month gte is before or equal to week gte', () => {
-    const monthResult = getDateRange('month')
-    const weekResult = getDateRange('week')
-    // month start should be on or before week start
-    expect(monthResult.gte.getTime()).toBeLessThanOrEqual(weekResult.gte.getTime())
+  it('month gte is before or equal to week gte when past day 7', () => {
+    const now = new Date()
+    if (now.getDate() > 7) {
+      const monthResult = getDateRange('month')
+      const weekResult = getDateRange('week')
+      expect(monthResult.gte.getTime()).toBeLessThanOrEqual(weekResult.gte.getTime())
+    }
   })
 
   it('all ranges have gte before or equal to lte', () => {
