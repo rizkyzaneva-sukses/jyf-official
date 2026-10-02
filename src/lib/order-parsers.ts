@@ -359,6 +359,7 @@ export function parseTikTokOrders(
     if (!orderNo) continue
 
     const sourceStatus = String(row['Order Status'] || '').trim()
+    const sourceSubstatus = String(row['Order Substatus'] || '').trim()
     const cancellationReturnType = String(
       row['Cancelation/Return Type']
       || row['Cancellation/Return Type']
@@ -366,7 +367,8 @@ export function parseTikTokOrders(
     ).trim()
     if (isTikTokCancel(sourceStatus) || cancellationReturnType.toLowerCase().includes('cancel')) continue
 
-    const status = toAppOrderStatus(sourceStatus, isReturnStatus(cancellationReturnType))
+    const effectiveStatus = isCompletedStatus(sourceSubstatus) ? sourceSubstatus : sourceStatus
+    const status = toAppOrderStatus(effectiveStatus, isReturnStatus(cancellationReturnType))
 
     const subtotalAfterDisc = parseTikTokNum(row['SKU Subtotal After Discount'])
     const qty = parseQty(row['Quantity'])

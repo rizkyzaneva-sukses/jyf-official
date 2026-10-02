@@ -456,6 +456,15 @@ describe('parseTikTokOrders', () => {
     expect(result.orders[0].status).toBe('TERKIRIM')
   })
 
+  it('maps TikTok Dikirim with Terkirim substatus to TERKIRIM', () => {
+    const rows = [makeTikTokRow({
+      'Order Status': 'Dikirim',
+      'Order Substatus': 'Terkirim',
+    })]
+    const result = parseTikTokOrders(rows, emptyHppMap, emptySkuMapping)
+    expect(result.orders[0].status).toBe('TERKIRIM')
+  })
+
   it('maps TikTok Return/Refund rows to RETUR', () => {
     const rows = [makeTikTokRow({
       'Order Status': 'Selesai',
