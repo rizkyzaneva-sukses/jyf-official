@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
     const omzetComp  = prevOmzet > 0 ? `${omzetArrow} ${fmt(Math.abs(omzetDiff))}` : '—'
     const orderComp  = `${orderArrow} ${Math.abs(countDiff)} order`
 
-    const msg = `📊 <b>LAPORAN HARIAN ELYASR</b>
+    const msg = `📊 <b>LAPORAN HARIAN JYF Footwear</b>
 ${tgl} — 17.30 WIB
 
 💰 <b>OMZET &amp; PROFIT (Hari Ini)</b>
@@ -204,7 +204,7 @@ ${agingStr}
 ├ Omzet  : ${omzetComp}
 └ Order  : ${orderComp}
 
-<i>Dikirim otomatis dari Elyasr Ops</i>`
+<i>Dikirim otomatis dari JYF Footwear</i>`
 
     // Kirim ke Telegram
     const tgResult = await sendTelegram(botToken, chatId, msg)

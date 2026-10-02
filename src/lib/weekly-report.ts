@@ -418,7 +418,7 @@ export async function buildWeeklyReport(): Promise<string> {
     ]
 
     const lines = [
-        `📅 <b>LAPORAN MINGGUAN — ELYASR</b>`,
+        `📅 <b>LAPORAN MINGGUAN — JYF Footwear</b>`,
         `🗓️ ${esc(periodLabel)} (vs ${esc(prevPeriodLabel)})`,
         sep, ``,
 
@@ -464,7 +464,7 @@ export async function buildWeeklyReport(): Promise<string> {
         ...stockSection,
 
         sep,
-        `🤖 <i>Auto weekly report · Elyasr Ops</i>`,
+        `🤖 <i>Auto weekly report · JYF Footwear</i>`,
     ]
 
     return lines.join('\n')

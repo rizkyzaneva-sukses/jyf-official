@@ -50,7 +50,7 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // ELYASR brand colors
+        // JYF Footwear brand colors
         elyasr: {
           navy: "#0a1628",
           gold: "#c9a84c",

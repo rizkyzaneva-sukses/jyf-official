@@ -32,7 +32,7 @@ export async function POST() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       chat_id: chatId,
-      text: `✅ <b>Test Koneksi Elyasr Ops</b>\n\nKonfigurasi Telegram kamu berhasil! 🎉\n\n📅 ${nowWIB}\n\n<i>Laporan harian akan dikirim ke chat ini setiap pukul 17:30 WIB.</i>`,
+      text: `✅ <b>Test Koneksi JYF Footwear</b>\n\nKonfigurasi Telegram kamu berhasil! 🎉\n\n📅 ${nowWIB}\n\n<i>Laporan harian akan dikirim ke chat ini setiap pukul 17:30 WIB.</i>`,
       parse_mode: 'HTML',
     }),
   })

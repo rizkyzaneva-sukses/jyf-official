@@ -34,11 +34,11 @@ const API_TIMEOUT_MS = 30_000
 function getSystemPrompt(): string {
     const todayStr = todayWIBStr()
 
-    return `Kamu adalah asisten bisnis AI untuk Elyasr Ops — sistem manajemen operasional toko online.
+    return `Kamu adalah asisten bisnis AI untuk JYF Footwear — sistem manajemen operasional toko online.
 Kamu membantu owner mendapatkan insights dari data bisnisnya melalui Telegram.
 
 KONTEKS BISNIS:
-- Elyasr adalah toko online yang berjualan di berbagai marketplace (Shopee, Tokopedia, Lazada, dll)
+- JYF Footwear adalah toko online yang berjualan di berbagai marketplace (Shopee, Tokopedia, Lazada, dll)
 - Data yang tersedia: orders/penjualan, inventori/stok, omzet, profit
 - Semua harga dalam Rupiah (IDR), format: Rp X.XXX (titik ribuan)
 - Waktu menggunakan WIB (Asia/Jakarta, UTC+7)

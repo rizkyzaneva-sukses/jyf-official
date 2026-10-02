@@ -1,5 +1,5 @@
 /**
- * Daily report builder untuk Elyasr Ops.
+ * Daily report builder untuk JYF Footwear.
  * Mengambil data dari DB dan memformat jadi pesan Telegram HTML.
  *
  * Versi CEO: snapshot operasional + lapisan keputusan
@@ -418,7 +418,7 @@ export async function buildDailyReport(): Promise<string> {
 
     // ─── Assemble ─────────────────────────────────────────────────────────────
     const lines = [
-        `🏪 <b>LAPORAN HARIAN — ELYASR</b>`,
+        `🏪 <b>LAPORAN HARIAN — JYF Footwear</b>`,
         `📅 ${esc(dateStr)} · ${timeStr} WIB`,
         sep, ``,
 
@@ -467,7 +467,7 @@ export async function buildDailyReport(): Promise<string> {
 
         ...stockSection,
         sep,
-        `🤖 <i>Auto-report · ${timeStr} WIB · Elyasr Ops</i>`,
+        `🤖 <i>Auto-report · ${timeStr} WIB · JYF Footwear</i>`,
     ]
 
     return lines.join('\n')

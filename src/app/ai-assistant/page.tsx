@@ -134,7 +134,7 @@ export default function AiAssistantPage() {
                 AI Assistant
                 <span className="text-[10px] bg-emerald-900/30 text-emerald-400 border border-emerald-800/40 px-1.5 py-0.5 rounded-full">Beta</span>
               </h1>
-              <p className="text-[11px] text-zinc-500">Tanya apa saja tentang Elyasr Ops</p>
+              <p className="text-[11px] text-zinc-500">Tanya apa saja tentang JYF Footwear</p>
             </div>
           </div>
           {messages.length > 0 && (

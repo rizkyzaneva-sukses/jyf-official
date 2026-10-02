@@ -286,7 +286,7 @@ function buildPrompt(data: ReturnType<typeof collectPerformanceData> extends Pro
   const runwayLine = data.kas.runwayHari > 0 ? `${data.kas.runwayHari} hari` : '—'
 
   return `Kamu adalah analis bisnis senior yang memahami e-commerce Indonesia.
-Berikut data performa toko Elyasr per ${data.nowWIB} (periode: ${data.periodLabel}):
+Berikut data performa toko JYF Footwear per ${data.nowWIB} (periode: ${data.periodLabel}):
 
 ## DATA INTI
 - Total Omzet    : ${fmt(data.omzetTotal)}

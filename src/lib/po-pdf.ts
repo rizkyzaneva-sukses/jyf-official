@@ -26,7 +26,7 @@ export function generatePOPDF(po: POData): jsPDF {
   // Header
   doc.setFontSize(8)
   doc.setTextColor(128)
-  doc.text('ELYASR Business Operation', margin, y)
+  doc.text('JYF Footwear Business Operation', margin, y)
   doc.text(new Date().toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' }), pageWidth - margin, y, { align: 'right' })
 
   y += 12

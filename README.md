@@ -1,4 +1,4 @@
-# ELYASR Management System
+# JYF Footwear Management System
 
 Sistem manajemen operasional bisnis e-commerce multi-platform.
 
@@ -81,7 +81,7 @@ git push -u origin master
 | `DATABASE_URL` | `postgresql://user:pass@db-host:5432/elyasr_ops` | Koneksi PostgreSQL |
 | `SESSION_SECRET` | Random 32+ karakter | Enkripsi session cookie |
 | `NODE_ENV` | `production` | Mode production |
-| `NEXT_PUBLIC_APP_NAME` | `ELYASR Business Operation` | Nama app |
+| `NEXT_PUBLIC_APP_NAME` | `JYF Footwear Business Operation` | Nama app |
 | `ANTIGRAVITY_URL_1` | `https://api.example.com/v1` | AI provider default |
 | `ANTIGRAVITY_KEY_1` | `your-api-key` | API key default |
 | `ANTIGRAVITY_MODEL_1` | `model-name` | Model AI default |

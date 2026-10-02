@@ -146,7 +146,7 @@ export default function AiInsightsPage() {
             AI Business Insights
           </h1>
           <p className="text-zinc-500 text-sm mt-0.5">
-            Analisis & rekomendasi dari AI berdasarkan data performa Elyasr
+            Analisis & rekomendasi dari AI berdasarkan data performa JYF Footwear
           </p>
         </div>
 
@@ -334,7 +334,7 @@ export default function AiInsightsPage() {
                 <Sparkles size={14} className="text-purple-400" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Analisis Performa Elyasr</p>
+                <p className="text-sm font-semibold text-white">Analisis Performa JYF Footwear</p>
                 <p className="text-[10px] text-zinc-500">Periode: {insight.period} · Powered by Mimo</p>
               </div>
             </div>

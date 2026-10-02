@@ -120,7 +120,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
             <span className="text-sm font-bold text-emerald-400">E</span>
           </div>
           <div>
-            <p className="text-sm font-semibold text-white">ELYASR</p>
+            <p className="text-sm font-semibold text-white">JYF Footwear</p>
             <p className="text-[10px] text-zinc-500">Management System</p>
           </div>
         </div>
@@ -196,7 +196,7 @@ export function MobileHeader({ onMenuOpen }: { onMenuOpen: () => void }) {
         <div className="w-6 h-6 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
           <span className="text-xs font-bold text-emerald-400">E</span>
         </div>
-        <span className="text-sm font-semibold text-white">ELYASR</span>
+        <span className="text-sm font-semibold text-white">JYF Footwear</span>
       </div>
     </header>
   )

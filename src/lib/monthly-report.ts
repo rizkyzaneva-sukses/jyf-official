@@ -277,7 +277,7 @@ export async function buildMonthlyReport(): Promise<string> {
         : '0'
 
     const lines = [
-        `📊 <b>LAPORAN BULANAN — ELYASR</b>`,
+        `📊 <b>LAPORAN BULANAN — JYF Footwear</b>`,
         `🗓️ ${esc(r.label)} (vs ${esc(r.prevLabel)})`,
         `📌 <i>Laba Rugi = basis pencairan · Ops = order masuk</i>`,
         sep, ``,
@@ -332,7 +332,7 @@ export async function buildMonthlyReport(): Promise<string> {
         `  ⚖️ Net Position · <b>${fmt(piutangData.total - utangData.total)}</b>`, ``,
 
         sep,
-        `🤖 <i>Auto monthly · tgl 2 · Laba Rugi kas · Elyasr Ops</i>`,
+        `🤖 <i>Auto monthly · tgl 2 · Laba Rugi kas · JYF Footwear</i>`,
     ].filter(line => line !== '')
 
     return lines.join('\n')

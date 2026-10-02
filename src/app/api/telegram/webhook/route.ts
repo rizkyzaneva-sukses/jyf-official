@@ -203,7 +203,7 @@ async function sendTyping(chatId: string | number) {
 // Command handlers (quick responses)
 // ─────────────────────────────────────────────
 function getHelpText(): string {
-    return `🤖 <b>Elyasr AI Assistant</b>
+    return `🤖 <b>JYF Footwear AI Assistant</b>
 
 Tip: Kirim /menu untuk navigasi via tombol.
 
@@ -263,7 +263,7 @@ async function processMessage(chatId: number, text: string, threadId?: number) {
             const main = getMenuByKey('main')!
             await sendReply(
                 chatId,
-                `👋 Halo! Saya <b>Elyasr AI Assistant</b>.\n\nPilih menu di bawah, atau tanya bebas dengan bahasa natural.\n\nContoh: "produk apa yang paling laku minggu ini?"`,
+                `👋 Halo! Saya <b>JYF Footwear AI Assistant</b>.\n\nPilih menu di bawah, atau tanya bebas dengan bahasa natural.\n\nContoh: "produk apa yang paling laku minggu ini?"`,
                 threadId,
                 main.keyboard,
             )

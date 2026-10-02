@@ -37,7 +37,7 @@ function BackupEntityRow({ entityKey, label, desc, canImport }: {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `elyasr-backup-${entityKey}-${todayWIBStr()}.json`
+      a.download = `jyf-footwear-backup-${entityKey}-${todayWIBStr()}.json`
       a.click()
       URL.revokeObjectURL(url)
       toast({ title: `Export "${label}" berhasil`, type: 'success' })

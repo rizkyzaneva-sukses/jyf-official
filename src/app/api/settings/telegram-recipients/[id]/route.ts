@@ -56,7 +56,7 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
     try {
         await sendTelegramTest(
             row.chatId,
-            `✅ <b>Test Koneksi Elyasr Ops</b>\n\nHalo <b>${row.name}</b>! Koneksi berhasil.${topicInfo}\n📅 ${now} WIB\n\n<i>Pesan ini dikirim ke topic yang benar? Berarti Topic ID sudah sesuai.</i>`,
+            `✅ <b>Test Koneksi JYF Footwear</b>\n\nHalo <b>${row.name}</b>! Koneksi berhasil.${topicInfo}\n📅 ${now} WIB\n\n<i>Pesan ini dikirim ke topic yang benar? Berarti Topic ID sudah sesuai.</i>`,
             row.threadId  // kirim ke topic jika threadId diset
         )
         return NextResponse.json({ success: true, message: `Test terkirim ke ${row.name}` })

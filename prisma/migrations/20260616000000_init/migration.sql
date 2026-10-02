@@ -1,4 +1,4 @@
--- ELYASR-OPS: Initial baseline migration
+-- JYF Footwear: Initial baseline migration
 -- This migration represents the full schema state.
 -- For EXISTING databases, mark as applied: prisma migrate resolve --applied 20260616000000_init
 

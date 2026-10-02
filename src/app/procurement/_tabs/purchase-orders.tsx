@@ -338,7 +338,7 @@ function PrintablePOContent({ po }: { po: any }) {
       <div className="border border-zinc-300 px-6 py-4 sm:px-8 sm:py-6">
         <div className="mb-4 flex items-center justify-between text-[10px] text-zinc-600">
           <span>{printedAt}</span>
-          <span className="font-medium tracking-wide">ELYASR Business Operation</span>
+          <span className="font-medium tracking-wide">JYF Footwear Business Operation</span>
         </div>
 
         <h1 className="mb-5 text-center text-2xl font-bold uppercase tracking-[0.2em]">Purchase Order</h1>

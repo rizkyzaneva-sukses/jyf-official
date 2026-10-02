@@ -18,7 +18,7 @@ export type MenuPayload = { text: string; keyboard: InlineKeyboard }
 // ─────────────────────────────────────────────
 export function getMainMenu(): MenuPayload {
     return {
-        text: `🏪 <b>Elyasr Bot Menu</b>
+        text: `🏪 <b>JYF Footwear Bot Menu</b>
 
 Pilih kategori untuk lihat data bisnis kamu.
 Atau tanya bebas — bot bisa jawab pertanyaan natural language.`,

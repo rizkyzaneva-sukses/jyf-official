@@ -1,6 +1,6 @@
-# 🚀 Panduan Deploy ELYASR Management System ke EasyPanel
+# 🚀 Panduan Deploy JYF Footwear Management System ke EasyPanel
 
-Dokumen ini menjelaskan langkah-langkah lengkap untuk men-deploy aplikasi **ELYASR Management System** ke [EasyPanel](https://easypanel.io/) menggunakan Docker.
+Dokumen ini menjelaskan langkah-langkah lengkap untuk men-deploy aplikasi **JYF Footwear Management System** ke [EasyPanel](https://easypanel.io/) menggunakan Docker.
 
 ---
 
@@ -92,7 +92,7 @@ DATABASE_URL=postgresql://elyasr_user:PASSWORD_ANDA@elyasr-db:5432/elyasr_ops
 SESSION_SECRET=ganti_dengan_random_string_minimal_32_karakter
 
 # Nama Aplikasi
-NEXT_PUBLIC_APP_NAME=ELYASR Business Operation
+NEXT_PUBLIC_APP_NAME=JYF Footwear Business Operation
 
 # Mode
 NODE_ENV=production
@@ -142,7 +142,7 @@ Di service `elyasr-app`, buka tab **"Build"** → bagian **"Build Arguments"** d
 ```
 DATABASE_URL=postgresql://elyasr_user:PASSWORD_ANDA@elyasr-db:5432/elyasr_ops
 SESSION_SECRET=random_secret_32_chars_minimum
-NEXT_PUBLIC_APP_NAME=ELYASR Business Operation
+NEXT_PUBLIC_APP_NAME=JYF Footwear Business Operation
 ```
 
 > Ini diperlukan karena `Dockerfile` menggunakan `ARG` untuk proses build (`prisma generate` & `next build`).
@@ -250,7 +250,7 @@ Pastikan **Build Arguments** sudah diisi dengan benar, terutama `DATABASE_URL`.
 |------------------------|-------|-----------------------------------------------------------|
 | `DATABASE_URL`         | ✅    | `postgresql://elyasr_user:pass@elyasr-db:5432/elyasr_ops` |
 | `SESSION_SECRET`       | ✅    | Random string minimal 32 karakter hex                     |
-| `NEXT_PUBLIC_APP_NAME` | ✅    | `ELYASR Business Operation`                               |
+| `NEXT_PUBLIC_APP_NAME` | ✅    | `JYF Footwear Business Operation`                         |
 | `NODE_ENV`             | ✅    | `production`                                              |
 | `ANTIGRAVITY_URL_1`    | ⚠️    | URL API Default (Mimo)                                    |
 | `ANTIGRAVITY_KEY_1`    | ⚠️    | API key Default                                           |
@@ -273,4 +273,4 @@ Pastikan **Build Arguments** sudah diisi dengan benar, terutama `DATABASE_URL`.
 
 ---
 
-*Dokumen ini dibuat untuk project **ELYASR Management System** — versi April 2026*
+*Dokumen ini dibuat untuk project **JYF Footwear Management System** — versi April 2026*
