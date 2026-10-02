@@ -117,7 +117,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
       <div className="px-4 py-5 border-b border-zinc-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-            <span className="text-sm font-bold text-emerald-400">E</span>
+            <span className="text-sm font-bold text-emerald-400">J</span>
           </div>
           <div>
             <p className="text-sm font-semibold text-white">JYF Footwear</p>

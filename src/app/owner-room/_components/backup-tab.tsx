@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useToast } from '@/components/ui/toaster'
 import { todayWIBStr } from '@/lib/utils'
-import { Download, Loader2, Upload, CheckCircle2, AlertCircle, FileJson } from 'lucide-react'
+import { Download, Loader2, Upload, CheckCircle2, AlertCircle, FileJson, RotateCcw } from 'lucide-react'
 
 interface ImportResult {
   inserted: number
@@ -206,6 +206,35 @@ function BackupEntityRow({ entityKey, label, desc, canImport }: {
 }
 
 export function BackupTab() {
+  const { toast } = useToast()
+  const [restoreLoading, setRestoreLoading] = useState(false)
+
+  const handleRestoreMaster = async () => {
+    const confirmed = window.confirm(
+      'PERINGATAN!\n\nApakah Anda yakin ingin MERESET seluruh database server dan menyuntikkan data master JYF lengkap (15.651 Pesanan, 31.399 Pencairan, 13 Vendor, 7 Dompet, dan 248 Transaksi Kas)?\n\nData lama di server akan ditimpa dengan data master terbaru.'
+    )
+    if (!confirmed) return
+
+    setRestoreLoading(true)
+    try {
+      const res = await fetch('/api/admin/restore-db', { method: 'POST' })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Gagal memulihkan database')
+      toast({
+        title: 'Database Berhasil Disuntik!',
+        description: `Tersimpan: ${json.stats?.orders?.toLocaleString()} pesanan, ${json.stats?.payouts?.toLocaleString()} pencairan, ${json.stats?.vendors} vendor.`,
+        type: 'success',
+      })
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500)
+    } catch (err: any) {
+      toast({ title: err.message || 'Gagal mereset database', type: 'error' })
+    } finally {
+      setRestoreLoading(false)
+    }
+  }
+
   const entities: { key: string; label: string; desc: string; canImport?: boolean }[] = [
     { key: 'all', label: 'Semua Data', desc: 'Export & Import lengkap semua entity sekaligus', canImport: true },
     { key: 'products', label: 'Master Produk', desc: 'Data produk & SKU (upsert by SKU)', canImport: true },
@@ -238,6 +267,28 @@ export function BackupTab() {
             canImport={e.canImport}
           />
         ))}
+      </div>
+
+      {/* Card Reset & Suntik Database Master */}
+      <div className="bg-red-950/20 border border-red-800/40 rounded-xl p-4 mt-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-sm font-semibold text-red-300 flex items-center gap-2">
+              <RotateCcw size={16} /> Reset & Suntik Database Server dari Snapshot Master
+            </h3>
+            <p className="text-xs text-zinc-400 mt-1">
+              Bersihkan data lama di server dan pulihkan <strong>15.651 Pesanan</strong>, <strong>31.399 Pencairan</strong>, <strong>13 Vendor</strong>, <strong>7 Dompet</strong>, dan <strong>248 Transaksi Kas</strong> JYF lengkap.
+            </p>
+          </div>
+          <button
+            onClick={handleRestoreMaster}
+            disabled={restoreLoading}
+            className="btn btn-danger text-xs px-4 py-2 shrink-0 flex items-center gap-2"
+          >
+            {restoreLoading ? <Loader2 size={14} className="animate-spin" /> : <RotateCcw size={14} />}
+            Reset & Suntik Sekarang
+          </button>
+        </div>
       </div>
     </div>
   )

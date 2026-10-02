@@ -25,7 +25,7 @@ RUN npm run build
 
 # ── Stage 3: runner ────────────────────────────────────
 FROM node:20-alpine AS runner
-RUN apk add --no-cache openssl tzdata
+RUN apk add --no-cache openssl tzdata postgresql-client
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -39,7 +39,8 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
 # Prisma CLI + client
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
@@ -51,10 +52,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Production: sync schema with db push, then start the app.
-# WHY NOT migrate deploy: legacy migrations 20260101000001..05 are ALTER TABLE on
-# tables that don't exist yet, and they sort BEFORE 20260616000000_init which has
-# CREATE TABLE IF NOT EXISTS. migrate deploy fails when the chain breaks.
-# db push directly syncs Prisma schema to the database — reliable for first deploy.
-# --accept-data-loss: allows destructive changes (safe on fresh DB).
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js db push --accept-data-loss 2>&1; node server.js"]
+# Production: sync schema with db push, run one-time database injection, then start the app.
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js db push --accept-data-loss 2>&1; node scripts/init-production-db.js; node server.js"]
