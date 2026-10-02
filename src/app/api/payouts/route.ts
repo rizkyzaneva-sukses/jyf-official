@@ -87,6 +87,12 @@ const TIKTOK_OMZET_COLS = [
   'Pendapatan Penjual',
 ]
 
+const LAZADA_ORDER_NO_COL = 'Nomor Pesanan'
+const LAZADA_RELEASED_DATE_COL = 'Tanggal Dilepas'
+const LAZADA_RELEASE_STATUS_COL = 'Status Pelepasan Dana'
+const LAZADA_AMOUNT_COL = 'Jumlah (Termasuk Pajak)'
+const LAZADA_FEE_NAME_COL = 'Nama Biaya'
+
 // ─────────────────────────────────────────────
 // Shopee Income formula
 // ─────────────────────────────────────────────
@@ -152,6 +158,7 @@ interface TikTokCalc {
   omzet: number
   biayaPlatform: number
   biayaAms: number
+  biayaPlatformLainnya: number
   yangDiterima: number
 }
 
@@ -183,7 +190,54 @@ function calcTikTok(row: Record<string, unknown>): TikTokCalc {
   // TikTok punya banyak varian nama kolom tergantung versi export
   const yangDiterima = firstNumber(row, TIKTOK_SETTLEMENT_COLS)
 
-  return { omzet, biayaPlatform, biayaAms, yangDiterima }
+  return { omzet, biayaPlatform, biayaAms, biayaPlatformLainnya: 0, yangDiterima }
+}
+
+/** Gabungkan rincian biaya Lazada menjadi satu settlement per nomor pesanan. */
+function groupLazadaIncomeRows(rawRows: Record<string, unknown>[]): Record<string, unknown>[] {
+  const grouped = new Map<string, Record<string, unknown>>()
+
+  for (const row of rawRows) {
+    const orderNo = String(row[LAZADA_ORDER_NO_COL] ?? '').trim()
+    if (!orderNo) continue
+
+    const releaseStatus = String(row[LAZADA_RELEASE_STATUS_COL] ?? '').trim().toLowerCase()
+    if (releaseStatus && !releaseStatus.includes('dilepas')) continue
+
+    const amount = n(row[LAZADA_AMOUNT_COL])
+    const feeName = String(row[LAZADA_FEE_NAME_COL] ?? '').trim().toLowerCase()
+    const current = grouped.get(orderNo) ?? {
+      __orderNo: orderNo,
+      __releasedDate: String(row[LAZADA_RELEASED_DATE_COL] ?? '').trim(),
+      __settlement: 0,
+      __omzet: 0,
+      __platformFee: 0,
+      __platformFeeOther: 0,
+    }
+
+    current.__settlement = n(current.__settlement) + amount
+    if (feeName.includes('omset penjualan')) {
+      current.__omzet = n(current.__omzet) + amount
+    } else if (/(komisi|biaya transaksi|order processing|biaya layanan)/.test(feeName)) {
+      current.__platformFee = n(current.__platformFee) + amount
+    } else {
+      current.__platformFeeOther = n(current.__platformFeeOther) + amount
+    }
+
+    grouped.set(orderNo, current)
+  }
+
+  return [...grouped.values()]
+}
+
+function calcLazada(row: Record<string, unknown>): TikTokCalc {
+  return {
+    omzet: n(row.__omzet),
+    biayaPlatform: n(row.__platformFee),
+    biayaAms: 0,
+    biayaPlatformLainnya: n(row.__platformFeeOther),
+    yangDiterima: n(row.__settlement),
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -342,8 +396,8 @@ export async function POST(request: NextRequest) {
     return apiSuccess({ inserted, skipped: payouts.length - newPayouts.length }, 201)
   }
 
-  // ── NEW: Shopee / TikTok Income Excel ───────────────
-  if (source !== 'shopee_income' && source !== 'tiktok_income')
+  // ── NEW: Shopee / TikTok / Lazada Income Excel ──────
+  if (source !== 'shopee_income' && source !== 'tiktok_income' && source !== 'lazada_income')
     return apiError('Source tidak dikenal')
 
   const { rawRows, isPreview } = body
@@ -351,17 +405,18 @@ export async function POST(request: NextRequest) {
   if (!Array.isArray(rawRows) || rawRows.length === 0)
     return apiError('Data rows kosong')
 
-  const platform     = source === 'shopee_income' ? 'Shopee' : 'TikTok'
+  const platform = source === 'shopee_income' ? 'Shopee' : source === 'lazada_income' ? 'Lazada' : 'TikTok'
   const ledgerCat    = `Payout ${platform}`
   const CHUNK        = 200
 
   // Normalize row keys (trim whitespace) — TikTok CSV headers may have trailing spaces
-  const normalizedRawRows: Record<string, unknown>[] = rawRows.map((row: Record<string, unknown>) => {
+  let normalizedRawRows: Record<string, unknown>[] = rawRows.map((row: Record<string, unknown>) => {
     if (source !== 'tiktok_income') return row
     const out: Record<string, unknown> = {}
     for (const [k, v] of Object.entries(row)) out[k.trim()] = v
     return out
   })
+  if (source === 'lazada_income') normalizedRawRows = groupLazadaIncomeRows(normalizedRawRows)
 
   let normalCount    = 0
   let returCount     = 0
@@ -394,6 +449,8 @@ export async function POST(request: NextRequest) {
       if (!('Lihat berdasarkan' in r)) return true
       return String(r['Lihat berdasarkan'] ?? '').trim().toLowerCase() === 'order'
     })
+  } else if (source === 'lazada_income') {
+    filteredRows = mappedRows.filter((r: any) => String(r.__orderNo ?? '').trim())
   } else {
     filteredRows = mappedRows
   }
@@ -427,6 +484,17 @@ export async function POST(request: NextRequest) {
       periodeTo   = wibYmd(new Date(Math.max(...times)))
     }
   }
+  if (source === 'lazada_income' && (!periodeFrom || !periodeTo)) {
+    const times: number[] = []
+    for (const row of filteredRows) {
+      const d = parseDateValue((row as Record<string, unknown>).__releasedDate)
+      if (d) times.push(d.getTime())
+    }
+    if (times.length > 0) {
+      periodeFrom = wibYmd(new Date(Math.min(...times)))
+      periodeTo   = wibYmd(new Date(Math.max(...times)))
+    }
+  }
 
   // ── For TikTok: detect which column is being used for settlement & omzet ──
   let detectedSettlementCol = '(tidak ditemukan)'
@@ -444,6 +512,7 @@ export async function POST(request: NextRequest) {
   // Collect all orderNos for bulk duplicate check
   const allOrderNos = filteredRows.map(r => {
     if (source === 'shopee_income') return String(r['No. Pesanan'] ?? '').trim()
+    if (source === 'lazada_income') return String(r.__orderNo ?? '').trim()
     return String(firstValue(r, TIKTOK_ORDER_ID_COLS) || '').trim()
   }).filter(Boolean)
 
@@ -565,10 +634,13 @@ export async function POST(request: NextRequest) {
       totalMasuk += settlement
 
     } else {
-      // TikTok
-      const orderNo = String(firstValue(row, TIKTOK_ORDER_ID_COLS) || '').trim()
+      // TikTok / Lazada
+      const isLazada = source === 'lazada_income'
+      const orderNo = isLazada
+        ? String(row.__orderNo ?? '').trim()
+        : String(firstValue(row, TIKTOK_ORDER_ID_COLS) || '').trim()
       if (!orderNo) {
-        invalidRows.push({ rowNumber: lineNum, value: '-', reason: 'Tidak ada ID Pesanan' })
+        invalidRows.push({ rowNumber: lineNum, value: '-', reason: isLazada ? 'Tidak ada Nomor Pesanan' : 'Tidak ada ID Pesanan' })
         continue
       }
       if (existingSet.has(orderNo) || seenOrderNos.has(orderNo)) {
@@ -578,7 +650,7 @@ export async function POST(request: NextRequest) {
       }
       seenOrderNos.add(orderNo)
 
-      const calc = calcTikTok(row)
+      const calc = isLazada ? calcLazada(row) : calcTikTok(row)
       if (isNaN(calc.yangDiterima) || isNaN(calc.omzet)) {
         invalidRows.push({ rowNumber: lineNum, value: orderNo, reason: 'Format numerik settlement/omzet tidak valid' })
         continue
@@ -596,7 +668,7 @@ export async function POST(request: NextRequest) {
         bebanCount++
         totalBeban += settlement
         detailBeban.push({ orderNo, amount: settlement })
-        const trxDate = parseDateValue(firstValue(row, TIKTOK_DATE_COLS)) ?? new Date()
+        const trxDate = parseDateValue(isLazada ? row.__releasedDate : firstValue(row, TIKTOK_DATE_COLS)) ?? new Date()
         // Tetap masuk sebagai PAYOUT (nilai negatif) supaya mengurangi total pencairan
         allPayoutInserts.push({
           orderNo,
@@ -609,7 +681,7 @@ export async function POST(request: NextRequest) {
           bebanOngkir:      Math.round(Math.abs(settlement)),
           totalIncome:      Math.round(settlement), // nilai negatif
           walletId,
-          source:           'tiktok_income',
+          source,
           createdBy:        session.username,
           orderId:          orderIdMap.get(orderNo) ?? null,
         })
@@ -620,16 +692,16 @@ export async function POST(request: NextRequest) {
           category: ledgerCat,
           amount:   Math.round(settlement), // negatif → mengurangi saldo
           refOrderNo: orderNo,
-          note:     `Payout TikTok (minus) - ${orderNo}`,
+          note:     `Payout ${platform} (minus) - ${orderNo}`,
           createdBy: session.username,
         })
         continue
       }
 
-      const rawSettledDate = firstValue(row, TIKTOK_DATE_COLS)
+      const rawSettledDate = isLazada ? row.__releasedDate : firstValue(row, TIKTOK_DATE_COLS)
       const parsedReleasedDate = parseDateValue(rawSettledDate)
       if (rawSettledDate && !parsedReleasedDate) {
-        invalidRows.push({ rowNumber: lineNum, value: orderNo, reason: 'Waktu penyelesaian pesanan tidak valid' })
+        invalidRows.push({ rowNumber: lineNum, value: orderNo, reason: isLazada ? 'Tanggal Dilepas tidak valid' : 'Waktu penyelesaian pesanan tidak valid' })
         continue
       }
       const releasedDate = parsedReleasedDate ?? new Date()
@@ -641,12 +713,12 @@ export async function POST(request: NextRequest) {
         omzet:            Math.round(Math.abs(calc.omzet)),
         platformFee:      Math.round(Math.abs(calc.biayaPlatform)),
         amsFee:           Math.round(Math.abs(calc.biayaAms)),
-        platformFeeOther: 0,
+        platformFeeOther: Math.round(Math.abs(calc.biayaPlatformLainnya)),
         bebanOngkir:      0,
         // Math.round() = bulatkan ke 1 Rp terdekat (akurat, bukan ke ribuan)
         totalIncome:      Math.round(settlement),
         walletId,
-        source:           'tiktok_income',
+        source,
         createdBy:        session.username,
         orderId:          orderIdMap.get(orderNo) ?? null,
       })
@@ -658,7 +730,7 @@ export async function POST(request: NextRequest) {
         // Math.round() = bulatkan ke 1 Rp terdekat (akurat, bukan ke ribuan)
         amount:   Math.round(settlement),
         refOrderNo: orderNo,
-        note:     `Payout TikTok - ${orderNo}`,
+        note:     `Payout ${platform} - ${orderNo}`,
         createdBy: session.username,
       })
       normalCount++

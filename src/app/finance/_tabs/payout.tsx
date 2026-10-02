@@ -9,7 +9,7 @@ import * as XLSX from 'xlsx'
 import { useAuth } from '@/components/providers'
 import {
   TrendingUp, Upload, Loader2, ChevronLeft, ChevronRight,
-  X, ShoppingBag, Music2, CalendarRange, AlertTriangle, Trash
+  X, ShoppingBag, Music2, Store, CalendarRange, AlertTriangle, Trash
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────
@@ -114,6 +114,49 @@ function extractPeriodFromRows(rows: Record<string, unknown>[]) {
   }
 }
 
+function getWorksheetRows(ws: XLSX.WorkSheet): unknown[][] {
+  const addresses = Object.keys(ws).filter(key => !key.startsWith('!'))
+  const cells = addresses.map(address => XLSX.utils.decode_cell(address))
+  if (cells.length === 0) return []
+
+  const maxRow = cells.reduce((max, cell) => Math.max(max, cell.r), 0)
+  const maxCol = cells.reduce((max, cell) => Math.max(max, cell.c), 0)
+  return XLSX.utils.sheet_to_json<unknown[]>(ws, {
+    header: 1,
+    defval: '',
+    range: { s: { r: 0, c: 0 }, e: { r: maxRow, c: maxCol } },
+  }) as unknown[][]
+}
+
+function parseTableRows(raw: unknown[][], requiredHeader: string) {
+  const headerRowIdx = raw.findIndex(row =>
+    Array.isArray(row) && row.some(cell => String(cell).trim() === requiredHeader)
+  )
+  if (headerRowIdx === -1) throw new Error(`Kolom "${requiredHeader}" tidak ditemukan di file`)
+
+  const rawHeaderRow = raw[headerRowIdx] as unknown[]
+  let lastCol = rawHeaderRow.length - 1
+  while (lastCol >= 0 && (rawHeaderRow[lastCol] === '' || rawHeaderRow[lastCol] == null)) lastCol--
+
+  const seenHeaders = new Map<string, number>()
+  const headers = rawHeaderRow.slice(0, lastCol + 1).map(cell => {
+    const name = String(cell ?? '').trim() || '(kosong)'
+    const count = (seenHeaders.get(name) ?? 0) + 1
+    seenHeaders.set(name, count)
+    return count === 1 ? name : `${name} #${count}`
+  })
+
+  const rows = raw.slice(headerRowIdx + 1)
+    .filter(row => Array.isArray(row) && row.some(cell => cell !== '' && cell != null))
+    .map(row => {
+      const obj: Record<string, unknown> = {}
+      headers.forEach((header, index) => { obj[header] = row[index] ?? 0 })
+      return obj
+    })
+
+  return { headers, rows }
+}
+
 // ─── Sub-component: Platform breakdown row ────────────
 function BreakdownRow({ shopeeVal, tiktokVal }: { shopeeVal: number; tiktokVal: number }) {
   return (
@@ -138,6 +181,7 @@ export function PayoutTab() {
   // File refs
   const shopeeRef = useRef<HTMLInputElement>(null)
   const tiktokRef = useRef<HTMLInputElement>(null)
+  const lazadaRef = useRef<HTMLInputElement>(null)
 
   // State
   const [walletId,   setWalletId]   = useState('')
@@ -153,6 +197,7 @@ export function PayoutTab() {
   // Modal states
   const [shopeeModal,   setShopeeModal]   = useState(false)
   const [tiktokModal,   setTiktokModal]   = useState(false)
+  const [lazadaModal,   setLazadaModal]   = useState(false)
   const [modalWallet,   setModalWallet]   = useState('')
   const [uploadResult,  setUploadResult]  = useState<UploadResult | null>(null)
   const [pendingPayload, setPendingPayload] = useState<any>(null)
@@ -233,54 +278,27 @@ export function PayoutTab() {
 
       const buffer = await file.arrayBuffer()
       const wb     = XLSX.read(buffer, { type: 'array' })
-      // Shopee ganti nama sheet dari "Income" (format lama) jadi "Penghasilan" (format baru, 2026+)
-      const ws     = wb.Sheets['Penghasilan'] || wb.Sheets['Income']
-      if (!ws) { throw new Error('Sheet "Penghasilan"/"Income" tidak ditemukan') }
+      // File Shopee baru membagi penghasilan besar menjadi Penghasilan - 1, - 2, dst.
+      const incomeSheets = wb.SheetNames
+        .filter(name => /^(penghasilan|income)(\s*-\s*\d+)?$/i.test(name))
+        .map(name => wb.Sheets[name])
+      if (incomeSheets.length === 0) throw new Error('Sheet "Penghasilan"/"Income" tidak ditemukan')
 
-      const raw = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1, defval: '' }) as unknown[][]
-
-      // Header row dicari dinamis (format lama: baris 6, format baru: baris 3) via kolom "No. Pesanan"
-      const headerRowIdx = raw.findIndex(r => Array.isArray(r) && r.some(c => String(c).trim() === 'No. Pesanan'))
-      if (headerRowIdx === -1) throw new Error('Kolom "No. Pesanan" tidak ditemukan di file')
-
-      const rawHeaderRow = raw[headerRowIdx] as unknown[]
-      let lastCol = rawHeaderRow.length - 1
-      while (lastCol >= 0 && (rawHeaderRow[lastCol] === '' || rawHeaderRow[lastCol] == null)) lastCol--
-      const headerRow = rawHeaderRow.slice(0, lastCol + 1)
-
-      // Format baru punya kolom "Lihat berdasarkan" (Order/Sku)
-      const isNewFormat = headerRow.some(c => String(c).trim() === 'Lihat berdasarkan')
-
-      // Dedup nama kolom kembar (mis. dua kolom "...Kategori G" di format baru) supaya tidak saling timpa
-      const seenHeaders = new Map<string, number>()
-      const headers = headerRow.map(c => {
-        const name = String(c ?? '').trim() || '(kosong)'
-        const count = (seenHeaders.get(name) ?? 0) + 1
-        seenHeaders.set(name, count)
-        return count === 1 ? name : `${name} #${count}`
-      })
+      const parsedSheets = incomeSheets.map(ws => parseTableRows(getWorksheetRows(ws), 'No. Pesanan'))
+      const rows = parsedSheets.flatMap(parsed => parsed.rows)
+      const isNewFormat = parsedSheets.some(parsed => parsed.headers.includes('Lihat berdasarkan'))
 
       // Total Cair = kolom "Total Penghasilan" langsung (sudah final di export Shopee).
-      // Jangan sum grup "Rincian Jumlah Pelepasan Dana" — grup itu berisi Total Penghasilan
-      // PLUS komponennya, jadi double-count (mis. 547457 → 1094914).
-      if (!headers.some(h => h === 'Total Penghasilan')) {
+      if (!parsedSheets.every(parsed => parsed.headers.includes('Total Penghasilan'))) {
         throw new Error('Kolom "Total Penghasilan" tidak ditemukan di file')
       }
-
-      const dataRows = raw.slice(headerRowIdx + 1)
-        .filter(r => Array.isArray(r) && r.some(c => c !== '' && c != null))
-      const rows = dataRows.map(r => {
-        const arr = r as unknown[]
-        const obj: Record<string, unknown> = {}
-        headers.forEach((h, i) => { obj[h] = arr[i] ?? 0 })
-        return obj
-      })
 
       let periodeFrom = ''
       let periodeTo   = ''
       if (!isNewFormat) {
-        periodeFrom = String((raw[1] as unknown[])?.[1] ?? '')
-        periodeTo   = String((raw[1] as unknown[])?.[2] ?? '')
+        const firstRaw = getWorksheetRows(incomeSheets[0])
+        periodeFrom = String((firstRaw[1] as unknown[])?.[1] ?? '')
+        periodeTo   = String((firstRaw[1] as unknown[])?.[2] ?? '')
       } else {
         const wsSummary = wb.Sheets['Summary']
         if (wsSummary) {
@@ -326,6 +344,67 @@ export function PayoutTab() {
     } finally {
       setImporting(false)
       if (shopeeRef.current) shopeeRef.current.value = ''
+      setModalWallet('')
+    }
+  }, [modalWallet, qc, toast])
+
+  // Parse & upload Lazada
+  const handleLazadaFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !modalWallet) return
+    setImporting(true)
+    setLazadaModal(false)
+    try {
+      if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+        throw new Error('Format file harus Excel (.xlsx)')
+      }
+
+      const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' })
+      const ws = wb.Sheets['Income Overview']
+      if (!ws) throw new Error('Sheet "Income Overview" tidak ditemukan')
+
+      const { headers, rows } = parseTableRows(getWorksheetRows(ws), 'Nomor Pesanan')
+      for (const required of ['Jumlah (Termasuk Pajak)', 'Tanggal Dilepas', 'Nama Biaya']) {
+        if (!headers.includes(required)) throw new Error(`Kolom "${required}" tidak ditemukan di file`)
+      }
+
+      const releasedDates = rows
+        .map(row => normalizeDateText(row['Tanggal Dilepas']))
+        .filter(Boolean)
+        .sort()
+      const payload = {
+        source: 'lazada_income',
+        rawRows: rows,
+        walletId: modalWallet,
+        periodeFrom: releasedDates[0] ?? '',
+        periodeTo: releasedDates[releasedDates.length - 1] ?? '',
+      }
+
+      const res = await fetch('/api/payouts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, isPreview: true }),
+      })
+      const json = await res.json()
+      if (res.ok) {
+        setUploadResult(json.data as UploadResult)
+        setPendingPayload(payload)
+        const result = json.data
+        if (result.invalidRows.length > 0 || result.duplikat > 0) {
+          toast({ title: 'Ada baris gagal/duplikat. Cek Preview.', type: 'info' })
+        } else if (result.normal === 0 && result.bebanOngkir === 0) {
+          toast({ title: 'Tidak ada data valid', type: 'error' })
+        } else {
+          toast({ title: 'File siap diimport', type: 'success' })
+        }
+      } else {
+        toast({ title: json.error ?? 'Gagal membaca file', type: 'error' })
+      }
+    } catch (err) {
+      toast({ title: `Error: ${err instanceof Error ? err.message : 'Gagal baca file'}`, type: 'error' })
+    } finally {
+      setImporting(false)
+      if (lazadaRef.current) lazadaRef.current.value = ''
       setModalWallet('')
     }
   }, [modalWallet, qc, toast])
@@ -480,6 +559,7 @@ export function PayoutTab() {
           {/* Hidden file inputs */}
           <input ref={shopeeRef} type="file" accept=".xlsx" className="hidden" onChange={handleShopeeFile} />
           <input ref={tiktokRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleTiktokFile} />
+          <input ref={lazadaRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleLazadaFile} />
 
           {/* Upload Shopee */}
           <button
@@ -501,6 +581,16 @@ export function PayoutTab() {
           >
             <Music2 size={13} />
             Upload TikTok
+          </button>
+
+          <button
+            id="payout-btn-upload-lazada"
+            onClick={() => { setModalWallet(''); setLazadaModal(true) }}
+            disabled={importing}
+            className="flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 disabled:opacity-50 text-white rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+          >
+            <Store size={13} />
+            Upload Lazada
           </button>
 
           {/* Backfill tanggal cair + Reset semua — OWNER only */}
@@ -809,6 +899,51 @@ export function PayoutTab() {
                 disabled={!modalWallet}
                 onClick={() => shopeeRef.current?.click()}
                 className="px-4 py-2 text-sm font-medium bg-orange-700 hover:bg-orange-600 disabled:opacity-40 text-white rounded-lg transition-colors"
+              >
+                Lanjut Upload →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══ MODAL: Pilih Wallet Lazada ══ */}
+      {lazadaModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl w-full max-w-sm mx-4">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800">
+              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <Store size={15} className="text-blue-400" />
+                Upload Payout Lazada
+              </h3>
+              <button onClick={() => setLazadaModal(false)} className="text-zinc-500 hover:text-zinc-300">
+                <X size={16} />
+              </button>
+            </div>
+            <div className="px-5 py-4 space-y-3">
+              <p className="text-xs text-zinc-400">Pilih wallet tujuan payout:</p>
+              <select
+                value={modalWallet}
+                onChange={e => setModalWallet(e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-300 focus:outline-none"
+              >
+                <option value="">-- Pilih Wallet --</option>
+                {(wallets ?? [])
+                  .filter((w: { isActive: boolean }) => w.isActive)
+                  .map((w: { id: string; name: string }) => (
+                    <option key={w.id} value={w.id}>{w.name}</option>
+                  ))}
+              </select>
+              <p className="text-[11px] text-zinc-400 bg-zinc-800/60 border border-zinc-700/50 rounded-lg px-2.5 py-2 leading-relaxed">
+                📄 Format: <b className="text-zinc-300">Excel (.xlsx)</b> · Lazada Income Overview
+              </p>
+            </div>
+            <div className="px-5 py-4 flex justify-end gap-2 border-t border-zinc-800">
+              <button onClick={() => setLazadaModal(false)} className="px-4 py-2 text-sm text-zinc-400 hover:text-zinc-200">Batal</button>
+              <button
+                disabled={!modalWallet}
+                onClick={() => lazadaRef.current?.click()}
+                className="px-4 py-2 text-sm font-medium bg-blue-700 hover:bg-blue-600 disabled:opacity-40 text-white rounded-lg transition-colors"
               >
                 Lanjut Upload →
               </button>
